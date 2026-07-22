@@ -1,0 +1,47 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <linearGradient id="leftGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#F472B6" />
+            <stop offset="100%" stop-color="#C084FC" />
+        </linearGradient>
+        <linearGradient id="rightGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#38BDF8" />
+            <stop offset="100%" stop-color="#C084FC" />
+        </linearGradient>
+    </defs>
+    <!-- Left Isometric Bracket -->
+    <g>
+        <!-- Outer Glow -->
+        <path d="M 45,30 L 20,44.43 L 20,155.57 L 45,170" fill="none" stroke="url(#leftGrad)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity="0.3"></path>
+        
+        <!-- Main Bracket -->
+        <path d="M 45,30 L 20,44.43 L 20,155.57 L 45,170" fill="none" stroke="url(#leftGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+    </g>
+    <!-- Right Isometric Bracket -->
+    <g>
+        <!-- Outer Glow -->
+        <path d="M 155,30 L 180,44.43 L 180,155.57 L 155,170" fill="none" stroke="url(#rightGrad)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity="0.3"></path>
+        
+        <!-- Main Bracket -->
+        <path d="M 155,30 L 180,44.43 L 180,155.57 L 155,170" fill="none" stroke="url(#rightGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+    </g>
+
+    <!-- Bottom -->
+    <g transform="translate(100, 127.7)">
+        <polygon points="0,-28 24.25,-14 0,0 -24.25,-14" fill="#C084FC"></polygon>
+        <polygon points="-24.25,-14 0,0 0,28 -24.25,14" fill="#A855F7"></polygon>
+        <polygon points="24.25,-14 0,0 0,28 24.25,14" fill="#9333EA"></polygon>
+    </g>
+    <!-- Top Left -->
+    <g transform="translate(68, 72.3)">
+        <polygon points="0,-28 24.25,-14 0,0 -24.25,-14" fill="#F472B6"></polygon>
+        <polygon points="-24.25,-14 0,0 0,28 -24.25,14" fill="#EC4899"></polygon>
+        <polygon points="24.25,-14 0,0 0,28 24.25,14" fill="#DB2777"></polygon>
+    </g>
+    <!-- Top Right -->
+    <g transform="translate(132, 72.3)">
+        <polygon points="0,-28 24.25,-14 0,0 -24.25,-14" fill="#38BDF8"></polygon>
+        <polygon points="-24.25,-14 0,0 0,28 -24.25,14" fill="#0EA5E9"></polygon>
+        <polygon points="24.25,-14 0,0 0,28 24.25,14" fill="#0284C7"></polygon>
+    </g>
+</svg>
