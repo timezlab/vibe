@@ -31,8 +31,3 @@ Navigation only — content lives in the linked documents.
 ## Debt
 
 - [tech-debt.md](tech-debt.md) — flat, grep-able debt log (empty).
-
-## Process records (historical)
-
-- [superpowers/specs/2026-07-22-docs-foundation-design.md](superpowers/specs/2026-07-22-docs-foundation-design.md) — approved design for this documentation foundation.
-- [superpowers/plans/2026-07-22-docs-foundation.md](superpowers/plans/2026-07-22-docs-foundation.md) — implementation plan executed for the foundation.
