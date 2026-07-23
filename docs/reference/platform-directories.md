@@ -407,6 +407,34 @@ Source: [Repository custom instructions](https://docs.github.com/en/copilot/how-
   `.copilot/mcp-config.json` or `.github/mcp.json` (CLI project) /
   `.vscode/mcp.json` (VS Code) — precedence order single-source.
 
+## Subfolder nesting (agents / rules / commands)
+
+Whether `<dir>/subfolder/file` is discovered at all, and — if so — whether
+the subfolder path becomes part of the registered name/invocation, or is
+purely organizational. This matters directly for VIBE: `agents/research/*.md`
+is a nested layout. Verified 2026-07-23; several cells are undocumented
+either way rather than confirmed negative — see per-platform notes.
+
+| Platform | Agents | Rules | Commands |
+|---|---|---|---|
+| Claude Code | ✅ recursive, **name-field only** (plugin exception: subfolder scopes the id, `plugin:review:security`) | ✅ recursive, organizational only | ❌ flat only — legacy path-namespacing was reported broken and closed "not planned" |
+| Codex | ⚠️ undocumented either way | *(n/a — folded into AGENTS.md; root→cwd walk only, not full-tree recursion)* | ❌ flat only, **explicitly documented**: "Codex scans only the top-level Markdown files" |
+| Gemini CLI | ❌ flat only — confirmed by reading `agentLoader.ts` source (filters files, does not recurse) | *(n/a — no rules dimension)* | ✅ recursive, **path becomes a namespace**: `git/commit.toml` → `/git:commit` |
+| Cursor | ❌ flat only — no official doc, confirmed by an open community feature request asking for it | ✅ recursive, organizational only | ⚠️ split: IDE recursively scans (undocumented/emergent), **CLI does not** — a documented "known behavior difference" |
+| Windsurf/Devin | *(n/a — no user-authored agent file format)* | ✅ recursive, **lazy-loaded by scope** (subdir rules load only when a file in that subtree is touched) | ✅ recursive; nested-workflow invocation-name format undocumented |
+| Cline | *(n/a — no user-authored agent file format)* | ⚠️ undocumented — docs only ever show flat examples | ⚠️ undocumented — same caveat |
+| Kiro | ✅ recursive, **and path becomes the name**: `.kiro/agents/research/code-researcher.md` registers/invokes as `research/code-researcher`, not `code-researcher` | ⚠️ implied via a `**/*.md` glob example, not confirmed for the default loader | *(n/a — no distinct commands dimension)* |
+| Antigravity | ⚠️ undocumented either way (docs show only one level: `.agents/agents/<name>/agent.md`) | ⚠️ undocumented either way | *(n/a — no documented commands dimension)* |
+| GitHub Copilot | ❌ flat only — a nested-folder bug report and feature request exist, closed "not planned" | ✅ recursive (`.instructions.md`) — VS Code docs state this explicitly; `applyTo` glob still does the actual scoping, not the path | ⚠️ undocumented either way |
+
+**Practical read for VIBE's `agents/research/` layout**: only **Claude Code**
+and **Kiro** accept it as-is, and even they diverge — Claude Code ignores the
+subfolder for identity, Kiro folds it into the invoked name. Every other
+subagent-capable target (Codex, Gemini CLI, Cursor, Copilot) either flattens
+silently, drops the file, or is undocumented — a `vibe sync` agent adapter
+must **flatten to the target's top level** and resolve name collisions
+itself; it cannot assume nested source layout survives the copy.
+
 ## Cross-cutting notes
 
 - **Subagent format has no cross-vendor standard**, unlike skills. Claude
@@ -440,6 +468,10 @@ Source: [Repository custom instructions](https://docs.github.com/en/copilot/how-
   Cursor/Copilot via their cross-reads, but **not** Codex (needs TOML
   translation), Gemini CLI, Kiro, or Antigravity (each needs its own
   `vibe sync` adapter target) — see [ADR 0006](../decisions/0006-predefine-research-agents-by-modality.md).
+  The symlink also only works *because* today's `agents/research/*.md` is
+  one nesting level deep and Claude Code ignores subfolders for identity;
+  a future adapter targeting Gemini CLI, Cursor, or Copilot must flatten
+  this layout rather than mirror it — see Subfolder nesting above.
 - A future `rules/`, `hooks/`, or `commands/` canonical directory
   (roadmap 🔜 items per [ARCHITECTURE.md](../../ARCHITECTURE.md)) has no
   cross-vendor symlink shortcut available — every platform in this survey
