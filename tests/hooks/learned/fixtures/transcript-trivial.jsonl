@@ -1,0 +1,6 @@
+{"type": "user", "message": {"role": "user", "content": "quick question 0"}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "text", "text": "quick answer 0"}]}}
+{"type": "user", "message": {"role": "user", "content": "quick question 1"}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "text", "text": "quick answer 1"}]}}
+{"type": "user", "message": {"role": "user", "content": "quick question 2"}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "text", "text": "quick answer 2"}]}}

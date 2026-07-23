@@ -1,0 +1,24 @@
+{"type": "user", "message": {"role": "user", "content": "user message 0: keep working on the feature"}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "text", "text": "assistant reply 0"}]}}
+{"type": "user", "message": {"role": "user", "content": "user message 1: keep working on the feature"}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "text", "text": "assistant reply 1"}]}}
+{"type": "user", "message": {"role": "user", "content": "user message 2: keep working on the feature"}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "text", "text": "assistant reply 2"}]}}
+{"type": "user", "message": {"role": "user", "content": "user message 3: keep working on the feature"}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "text", "text": "assistant reply 3"}]}}
+{"type": "user", "message": {"role": "user", "content": "no \u2014 don't write one file per call, batch them"}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "text", "text": "assistant reply 4"}]}}
+{"type": "user", "message": {"role": "user", "content": "user message 5: keep working on the feature"}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "text", "text": "assistant reply 5"}]}}
+{"type": "user", "message": {"role": "user", "content": "user message 6: keep working on the feature"}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "text", "text": "assistant reply 6"}]}}
+{"type": "user", "message": {"role": "user", "content": "user message 7: keep working on the feature"}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "text", "text": "assistant reply 7"}]}}
+{"type": "user", "message": {"role": "user", "content": "again: you looped single writes, please batch"}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "text", "text": "assistant reply 8"}]}}
+{"type": "user", "message": {"role": "user", "content": "user message 9: keep working on the feature"}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "text", "text": "assistant reply 9"}]}}
+{"type": "user", "message": {"role": "user", "content": "user message 10: keep working on the feature"}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "text", "text": "assistant reply 10"}]}}
+{"type": "user", "message": {"role": "user", "content": "user message 11: keep working on the feature"}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "text", "text": "assistant reply 11"}]}}
