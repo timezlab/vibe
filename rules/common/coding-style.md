@@ -90,3 +90,8 @@ patterns, and abstractions each need a reason existing code can't answer.
 When a simple version works, ship it and let real pressure justify the
 next layer — premature optimization and premature abstraction are the
 same mistake at different altitudes.
+
+One performance mistake is not premature, though: never issue a query or
+remote call inside a loop over unbounded data — batch or join instead. An
+N+1 round-trip degrades linearly with data size, so it's a correctness-
+scale bug that surfaces in production, not a micro-optimization to defer.
