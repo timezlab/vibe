@@ -17,9 +17,9 @@ Read only the references the current request needs, but read each selected refer
 | Inspect history, find when/why a change appeared, bisect a regression | [references/history-and-debugging.md](references/history-and-debugging.md) |
 | Create/switch branches, worktrees, parallel-agent isolation, finish or clean up a branch | [references/branches-and-worktrees.md](references/branches-and-worktrees.md) |
 | Stage changes, split mixed diffs, write the commit message, amend/fixup, attribution/signing | [references/staging-and-commits.md](references/staging-and-commits.md) |
-| Fetch/integrate/push, resolve conflicts, rewrite history, recover lost commits | [references/sync-conflicts-and-recovery.md](references/sync-conflicts-and-recovery.md) |
+| Fetch/integrate/push, sync a fork, resolve conflicts, rewrite history, recover lost commits | [references/sync-conflicts-and-recovery.md](references/sync-conflicts-and-recovery.md) |
 | Create, triage, update, relate, or close a GitHub issue | [references/github-issues.md](references/github-issues.md) |
-| Create, update, or merge a GitHub PR; respond to review feedback; interpret checks | [references/github-pull-requests.md](references/github-pull-requests.md) |
+| Create, update, or merge a GitHub PR; review someone's PR; respond to review feedback; interpret checks or debug CI failures | [references/github-pull-requests.md](references/github-pull-requests.md) |
 | Cut a release: choose the version, tag, changelog, GitHub release | [references/releases.md](references/releases.md) |
 
 Common routes:

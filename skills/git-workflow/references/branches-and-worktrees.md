@@ -74,3 +74,12 @@ For option 2, keep the worktree alive — it's needed to iterate on review feedb
 ## Cleanup gate
 
 Deleting worktrees and branches is one of the few genuinely irreversible git actions once reflog expires. Remove only what you created (your `.worktrees/` entries, your task branches), and only after proving: no active user or process in the path; clean status including untracked files; every unique commit reachable from a durable branch/tag/remote ref; no nested repository or submodule inside. Don't use `--force` to erase unexplained dirt. `worktree remove`, local `branch -d`, and remote branch deletion are three separate decisions — remote deletion needs its own authority.
+
+Finding candidates safely:
+
+```bash
+git fetch -p                                  # drop tracking refs for branches already deleted on the remote
+git branch --merged <default>                 # branches whose every commit is reachable from <default> — safe for -d
+```
+
+Caveat: in squash-merge repos `--merged` misses merged branches (the squash commit is new; the branch's commits stay unreachable), and `branch -d` will refuse. Verify via the PR's merged state instead, then deletion is `-D` — which makes it a destructive action needing the proof above, not a convenience.

@@ -38,7 +38,7 @@ Pre-1.0 convention allows breaking on MINOR — follow the repo's own history. A
 
 ## 3. Changelog
 
-Group by impact (Breaking / Added / Fixed / Internal), written from the diff with commit messages as context, in the repo's existing format (`CHANGELOG.md` convention or previous release-notes style). Link PRs/issues where the repo does. **Gate 2:** confirm the text.
+Group by impact (Breaking / Added / Fixed / Internal), written from the diff with commit messages as context, in the repo's existing format (`CHANGELOG.md` convention or previous release-notes style). Link PRs/issues where the repo does. `gh api repos/{owner}/{repo}/releases/generate-notes -f tag_name=v$VERSION` (or `gh release create --generate-notes`) drafts notes from merged PR titles — a starting point only: PR titles state intent, so reconcile the draft against the step-2 diff before presenting it. **Gate 2:** confirm the text.
 
 ## 4. Execute
 

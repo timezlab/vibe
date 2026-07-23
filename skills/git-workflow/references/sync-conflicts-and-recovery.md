@@ -1,10 +1,29 @@
 # Synchronization, Conflicts, and Recovery
 
-Contents: integrate · conflicts · push · rewriting history non-interactively · recovery playbook.
+Contents: integrate · fork hygiene · conflicts · push · rewriting history non-interactively · recovery playbook.
 
 ## Integrate deliberately
 
-`git pull` immediately integrates according to config — fetch first, then choose the integration on purpose. Choose by repo policy and collaboration state, not aesthetics: merge preserves shared history; rebase is for owned/private commits or an explicit repo workflow. Before any rebase, cherry-pick, or history surgery, preserve the current tip: `git branch rescue/<task> HEAD`.
+`git pull` immediately integrates according to config — fetch first, then choose the integration on purpose. Choose by repo policy and collaboration state, not aesthetics:
+
+- **Rebase** when updating your own unpublished task branch onto the latest base, or when the repo mandates linear history.
+- **Merge** when integrating into a shared branch, or into any branch someone else may have based work on.
+- **Never rebase** commits that are published on a shared branch, that others have built on, or that are already merged — the rewrite forces every collaborator to repair their history.
+
+Before any rebase, cherry-pick, or history surgery, preserve the current tip: `git branch rescue/<task> HEAD`.
+
+## Fork hygiene
+
+A fork drifts; sync it from the source repo, not by re-cloning:
+
+```bash
+git remote add upstream https://github.com/<owner>/<repo>.git   # once; verify with git remote -v
+git fetch upstream
+git switch <default> && git merge --ff-only upstream/<default>  # ff-only: a fork's default should carry no unique commits
+git push origin <default>
+```
+
+If `--ff-only` refuses, the fork's default has local commits — stop and move them to a branch deliberately instead of forcing a merge knot. Task branches then rebase or merge from the updated default as usual.
 
 ## Conflicts
 
