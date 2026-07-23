@@ -129,6 +129,11 @@ that would drown one context, or per-facet tool specialization.
 - One subagent per **facet** (sub-question or source domain), never per role
   — a searcher→reader→writer pipeline is a telephone game that loses context
   at each handoff.
+- If the harness ships predefined research lanes (this repo's
+  `agents/research/`: web-researcher, academic-researcher, code-researcher,
+  fact-checker), dispatch to the matching lane instead of rebuilding its
+  brief — then the dispatch only needs the facet, constraints, and output
+  path.
 - Each brief needs an objective, output format, source guidance, and scope
   boundaries; without boundaries subagents duplicate work and leave gaps.
   Brief anatomy and dispatch mechanics → **parallel-agents**.
