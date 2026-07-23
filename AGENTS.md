@@ -11,9 +11,9 @@ Node/TypeScript, node-pty, xterm.js, Dockview.
 
 ## Key rules
 
-- Canonical sources only: `skills/` is the source of truth;
-  `.agents/skills/` and `.claude/skills/` are symlinks into it — never edit
-  or copy content there.
+- Canonical sources only: `skills/` and `agents/` are the source of truth;
+  `.agents/skills/`, `.claude/skills/`, and `.claude/agents/` are symlinks
+  into them — never edit or copy content there.
 - Generated platform outputs are build artifacts — regenerate, never
   hand-patch (constitution principle I).
 - ADRs in `docs/decisions/` are append-only; reversing a decision = new ADR

@@ -13,7 +13,7 @@ linked from [docs/index.md](docs/index.md#decisions-adrs--append-only).
 | `.specify/` | ✅ | Spec Kit engine: constitution, templates, scripts, workflows. |
 | `docs/` | ✅ | Durable documentation: product, ADRs, debt, index. |
 | `rules/` | 🔜 (1) | Canonical rule packs (common, TypeScript). |
-| `agents/` | 🔜 (1) | 3–4 canonical agent definitions. |
+| `agents/` | ✅ | Canonical agent definitions (research modality lanes). `.claude/agents/` is a symlink into it; Cursor cross-reads it ([ADR 0006](docs/decisions/0006-predefine-research-agents-by-modality.md)). |
 | `commands/` | 🔜 (1) | Canonical slash commands. |
 | `hooks/` | 🔜 (1) | Shared hook scripts (memory hooks first); thin per-harness event adapters. |
 | `mcp-configs/` | 🔜 (1) | Canonical MCP server configs. |
