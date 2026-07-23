@@ -11,10 +11,11 @@ Node/TypeScript, node-pty, xterm.js, Dockview.
 
 ## Key rules
 
-- Canonical sources only: `skills/`, `agents/`, and `rules/` are the source
-  of truth; `.agents/skills/`, `.claude/skills/`, `.claude/agents/`, and
-  `.claude/rules/` are symlinks into them — never edit or copy content
-  there.
+- Canonical sources only: `skills/`, `agents/`, `rules/`, and `hooks/` are
+  the source of truth; `.agents/skills/`, `.claude/skills/`,
+  `.claude/agents/`, and `.claude/rules/` are symlinks into them — never
+  edit or copy content there. Hooks wire via `settings.json`, not
+  symlinks (per-project opt-in).
 - Generated platform outputs are build artifacts — regenerate, never
   hand-patch (constitution principle I).
 - ADRs in `docs/decisions/` are append-only; reversing a decision = new ADR

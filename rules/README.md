@@ -2,8 +2,10 @@
 
 Always-on rule packs: short, normative constraints an agent follows in
 every session — the "what". Deep guidance — the "how" — lives in skills,
-loaded on demand (for these packs: the `coding-style` skill). Rules stay
-thin because every always-loaded line competes with the task's own context.
+loaded on demand (for these packs: the `coding-style` and `security-audit`
+skills). Rules stay thin because every always-loaded line competes with
+the task's own context. Rules are also only *context* — deterministic
+enforcement of the security rules lives in `hooks/security/`.
 
 ## Layout and precedence
 
@@ -11,8 +13,14 @@ thin because every always-loaded line competes with the task's own context.
 rules/
 ├── common/       # language-agnostic; loads unconditionally
 ├── typescript/   # extends common; loads for **/*.ts(x) and friends
-└── python/       # extends common; loads for **/*.py
+├── python/       # extends common; loads for **/*.py
+└── shell/        # extends common; loads for **/*.sh, **/*.bash
 ```
+
+Topics per pack: `coding-style` (how code reads), `security` (what's
+safe), and `agent-behavior` (how the agent acts — scope, honesty,
+convention-following). `agent-behavior` is common-only: conduct doesn't
+vary by language, so there's no per-language override to write.
 
 - Language packs open with an "extends" line and only add or override.
   Where a language file conflicts with common, the language file wins —
@@ -35,7 +43,11 @@ rules/
 
 ## Adding a pack
 
-Mirror `common/`'s filenames (`coding-style.md` first), open with the
-extends line, keep each file under ~100 lines, and give every rule its
-why — a bare prohibition teaches nothing and gets ignored. Format decision:
-[ADR 0007](../docs/decisions/0007-adopt-claude-native-rule-packs.md).
+For a new *language* pack, mirror the `common/` filenames it needs to
+extend (`coding-style.md`, `security.md`), open with the extends line, keep
+each file under ~100 lines, and give every rule its why — a bare
+prohibition teaches nothing and gets ignored. A new *topic* (like
+`agent-behavior`) is a common-only file unless the constraint genuinely
+differs by language. Format decision:
+[ADR 0007](../docs/decisions/0007-adopt-claude-native-rule-packs.md);
+security layering: [ADR 0008](../docs/decisions/0008-adopt-a-layered-security-harness.md).

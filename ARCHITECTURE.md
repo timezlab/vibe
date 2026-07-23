@@ -12,10 +12,10 @@ linked from [docs/index.md](docs/index.md#decisions-adrs--append-only).
 | `skills/` | ✅ | Canonical skills (docs-architect, git-workflow, prompt-guru). `.agents/skills/` and `.claude/skills/` are symlinks into it. |
 | `.specify/` | ✅ | Spec Kit engine: constitution, templates, scripts, workflows. |
 | `docs/` | ✅ | Durable documentation: product, ADRs, debt, index. |
-| `rules/` | ✅ | Canonical rule packs (common, typescript, python): thin always-on "what"; the "how" lives in `skills/coding-style/` ([ADR 0007](docs/decisions/0007-adopt-claude-native-rule-packs.md)). `.claude/rules/` is a symlink into it. |
-| `agents/` | ✅ | Canonical agent definitions (research modality lanes). `.claude/agents/` is a symlink into it; Cursor cross-reads it ([ADR 0006](docs/decisions/0006-predefine-research-agents-by-modality.md)). |
+| `rules/` | ✅ | Canonical rule packs (common, typescript, python, shell) across topics coding-style / security / agent-behavior: thin always-on "what"; the "how" for the first two lives in companion skills (`coding-style`, `security-audit`) ([ADR 0007](docs/decisions/0007-adopt-claude-native-rule-packs.md)). `.claude/rules/` is a symlink into it. |
+| `agents/` | ✅ | Canonical agent definitions (research modality lanes, security reviewer). `.claude/agents/` is a symlink into it; Cursor cross-reads it ([ADR 0006](docs/decisions/0006-predefine-research-agents-by-modality.md)). |
 | `commands/` | 🔜 (1) | Canonical slash commands. |
-| `hooks/` | 🔜 (1) | Shared hook scripts (memory hooks first); thin per-harness event adapters. |
+| `hooks/` | ✅ | Security enforcement hooks — fail-closed PreToolUse guards + install-time dependency gate ([ADR 0008](docs/decisions/0008-adopt-a-layered-security-harness.md)); wiring is per-project opt-in. Memory hooks and per-harness event adapters still planned (1). |
 | `mcp-configs/` | 🔜 (1) | Canonical MCP server configs. |
 | `adapters/` | 🔜 (1) | Per-platform: write targets + transform + capability matrix. |
 | `scripts/` | 🔜 (1) | Installer and sync helpers (incl. rules copy into `~/.claude/rules/`). |
