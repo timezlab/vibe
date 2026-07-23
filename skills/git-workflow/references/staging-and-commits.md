@@ -52,6 +52,19 @@ The diff already shows the *what*; the body carries the *why* — previous behav
 3. Conventional Commits when structured messages help;
 4. otherwise: a specific imperative subject ("reject expired tokens," not "update auth") plus a why-body.
 
+**When the body is required — decide by rule, not by mood.** Write a body
+whenever the commit touches more than one file, adds a mechanism /
+decision / convention, or carries a *why* the diff can't show. Subject-only
+is reserved for changes whose intent is complete in the one line — a typo,
+a version bump, an obvious single rename. A description packed into the
+subject (`skill: x (…)`, `feat(y): …`) is still a subject, not a body; a
+substantial change needs both. Calibrate body depth to the change's
+weight: in a batch of commits, the largest or most novel one earns the
+*most* body, not the least. Sequential body-or-not calls made under
+momentum are exactly what leaves a batch's messages uneven — a big commit
+with a one-line message next to a trivial one with three; hold every
+commit in the pass to this same bar.
+
 Conventional Commit types — pick by what the diff does, not what the ticket says; the type is a release signal (see releases.md):
 
 | Type | For | Release |
