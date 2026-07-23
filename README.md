@@ -9,6 +9,7 @@
 **[Why VIBE](#why-vibe)** ·
 **[Planned experience](#planned-experience)** ·
 **[What's here today](#whats-in-this-repository-today)** ·
+**[Installing skills](#installing-skills)** ·
 **[Roadmap](#roadmap)** ·
 **[Docs](#documentation)**
 
@@ -54,6 +55,28 @@ All three surfaces are **planned**, not yet built:
 | **Agents** — canonical source under [agents/](agents/) | Predefined research subagents split by modality ([ADR 0006](docs/decisions/0006-predefine-research-agents-by-modality.md)): [web-researcher](agents/research/web-researcher.md) · [academic-researcher](agents/research/academic-researcher.md) · [code-researcher](agents/research/code-researcher.md) · [fact-checker](agents/research/fact-checker.md)                                                                 |
 | **Documentation foundation**                           | Product direction, ADRs, and agent routing — see [docs/index.md](docs/index.md)                                                                                                                                                                                                                                                                                                                                        |
 | **Spec Kit**                                           | [GitHub Spec Kit](https://github.com/github/spec-kit) initialized for spec-driven feature work (`.specify/`)                                                                                                                                                                                                                                                                                                           |
+
+## Installing skills
+
+Skills can be installed straight from this repo with
+[`npx skills`](https://github.com/vercel-labs/skills) — no clone needed:
+
+```bash
+npx skills add https://github.com/timezlab/vibe/tree/main/skills
+```
+
+This scans [skills/](skills/) and lets you pick which ones to install into
+your agent's config (Claude Code, Cursor, Codex, and others). To grab a
+single skill without the picker, add `--skill <name>`:
+
+```bash
+npx skills add https://github.com/timezlab/vibe/tree/main/skills --skill coding-style
+```
+
+> The short `owner/repo` form (`npx skills add timezlab/vibe`) works too,
+> but scans the whole repo — including the `.claude/skills` symlinks — so
+> the `tree/main/skills` URL above is the shortest link that targets the
+> canonical source cleanly.
 
 ## Roadmap
 
