@@ -9,6 +9,15 @@ Reproduce → evidence → one hypothesis → fix the cause → verify fresh. Th
 order is the discipline: every phase exists to stop a specific, documented
 way agents lose hours.
 
+**The one non-negotiable: no fix before the cause is demonstrated.** Not
+suspected, not "probably" — demonstrated: a reproduction that fails, a
+traced origin, an experiment that separated your hypothesis from the
+alternatives. A fix proposed before that point is a guess that may compile,
+pass, and still be wrong — and its failure costs more than the
+investigation it skipped, because now the context carries a dead theory
+too. Everything below exists to get you to "demonstrated" *fast*, not to
+slow the fix down.
+
 **Why structure beats intuition here:** the best-documented agent debugging
 failures are all shortcuts through this loop — patching a plausible cause
 that was never confirmed, "fixing" by making the check stop failing
