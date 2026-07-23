@@ -15,7 +15,8 @@ linked from [docs/index.md](docs/index.md#decisions-adrs--append-only).
 | `rules/` | ✅ | Canonical rule packs (common, typescript, python, shell) across topics coding-style / security / agent-behavior: thin always-on "what"; the "how" for the first two lives in companion skills (`coding-style`, `security-audit`) ([ADR 0007](docs/decisions/0007-adopt-claude-native-rule-packs.md)). `.claude/rules/` is a symlink into it. |
 | `agents/` | ✅ | Canonical agent definitions (research modality lanes, security reviewer, root-cause analyst). `.claude/agents/` is a symlink into it; Cursor cross-reads it ([ADR 0006](docs/decisions/0006-predefine-research-agents-by-modality.md)). |
 | `commands/` | 🔜 (1) | Canonical slash commands. |
-| `hooks/` | ✅ | Security enforcement hooks — fail-closed PreToolUse guards + install-time dependency gate ([ADR 0008](docs/decisions/0008-adopt-a-layered-security-harness.md)); wiring is per-project opt-in. Memory hooks and per-harness event adapters still planned (1). |
+| `hooks/` | ✅ | Security enforcement hooks — fail-closed PreToolUse guards + install-time dependency gate ([ADR 0008](docs/decisions/0008-adopt-a-layered-security-harness.md)) — and learned-context hooks — SessionStart loader + SessionEnd capture for the reviewed memory loop ([ADR 0003](docs/decisions/0003-use-reviewed-file-based-memory.md), spec `specs/001-learned-context/`). Wiring is per-project opt-in; per-harness event adapters still planned (1). |
+| `tests/` | ✅ | pytest suite for executable content (`tests/hooks/learned/`): process-level hook tests + unit tests, hermetic (extraction LLM stubbed). Run with `pytest tests/`. |
 | `mcp-configs/` | 🔜 (1) | Canonical MCP server configs. |
 | `adapters/` | 🔜 (1) | Per-platform: write targets + transform + capability matrix. |
 | `scripts/` | 🔜 (1) | Installer and sync helpers (incl. rules copy into `~/.claude/rules/`). |
@@ -47,5 +48,9 @@ targets are never edited in place
   `<repo>/.vibe/worktrees/<branch>/`
   ([ADR 0002](docs/decisions/0002-use-repository-local-git-worktrees.md)).
 - **Memory**: instincts move `pending → approved` only via explicit human
-  review; sessions load approved instincts only
-  ([ADR 0003](docs/decisions/0003-use-reviewed-file-based-memory.md)).
+  review (`/instinct-review`); sessions load approved instincts only — the
+  loader reads exactly one directory, `.vibe/learned/instincts/approved/`
+  ([ADR 0003](docs/decisions/0003-use-reviewed-file-based-memory.md)). The
+  per-project store lives at `<repo>/.vibe/learned/` (runtime data, never
+  committed — excluded via `.git/info/exclude`), with approved/retired
+  instincts mirrored to `~/.local/share/vibe/backup/<project-id>/`.

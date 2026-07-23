@@ -27,6 +27,7 @@ Node/TypeScript, node-pty, xterm.js, Dockview.
 ## Commands
 
 - Validate a skill: `uvx --from 'skills-ref==0.1.1' agentskills validate skills/<name>`
+- Run tests: `pytest tests/` (hook packs; hermetic — no credentials needed)
 - Spec Kit: `specify check` · feature flow via `/speckit-specify` →
   `/speckit-plan` → `/speckit-tasks` → `/speckit-implement`
 - Commits: `skill: <name> (<desc>)` for new skills, `fix(<name>): …` /
@@ -35,15 +36,16 @@ Node/TypeScript, node-pty, xterm.js, Dockview.
 ## Spec gate
 
 Use Spec Kit only for work with ≥3 tasks / >2 days / changed contracts or a
-debatable done condition — otherwise just make the change. No active feature
-spec exists; the first qualifying feature takes `specs/001-*`.
+debatable done condition — otherwise just make the change. Active feature:
+`specs/001-learned-context/`; the next qualifying feature takes `specs/002-*`.
 
 ## Docs map
 
 | When you need to… | Read |
 |---|---|
 | Understand the repo structure | [ARCHITECTURE.md](ARCHITECTURE.md) |
-| Find active feature work | `specs/NNN-*/` (empty — no active feature yet) |
+| Find active feature work | [specs/001-learned-context/](specs/001-learned-context/) (learned-context memory loop) |
+| Understand the learned-context hooks | [hooks/learned/README.md](hooks/learned/README.md) (review via `/instinct-review`, graduation via `/evolve`) |
 | Understand product intent / scope | [docs/product/DESIGN.md](docs/product/DESIGN.md) |
 | Check the roadmap or open decision gates | [docs/product/roadmap.md](docs/product/roadmap.md) |
 | Understand why a technical choice was made | [docs/index.md](docs/index.md#decisions-adrs--append-only) |
