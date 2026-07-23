@@ -23,6 +23,7 @@ Navigation only — content lives in the linked documents.
 - [0004 — Canonical content compiled through adapters](decisions/0004-compile-canonical-content-through-adapters.md) — one source, generated platform targets.
 - [0005 — Claude-compatible plugin layout](decisions/0005-use-a-claude-compatible-plugin-layout.md) — layout fixed, distribution deferred.
 - [0006 — Predefined research agents by modality](decisions/0006-predefine-research-agents-by-modality.md) — canonical `agents/`, split by modality, thin definitions linked to skills.
+- [0007 — Claude-native Markdown rule packs](decisions/0007-adopt-claude-native-rule-packs.md) — `rules/<pack>/*.md` with `paths:` scoping; thin rules, deep companion skill.
 
 ## Reference
 

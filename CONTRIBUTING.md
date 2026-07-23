@@ -1,7 +1,7 @@
 # Contributing
 
 Thanks for helping build VIBE. The project is **pre-alpha**: today you can
-contribute skills and documentation. CLI/app contributions open once those
+contribute skills, rule packs, and documentation. CLI/app contributions open once those
 packages exist (Phases 1–2 of the [roadmap](docs/product/roadmap.md)).
 
 ## Setup assumptions
@@ -44,6 +44,20 @@ Validate before opening a PR:
 ```bash
 uvx --from 'skills-ref==0.1.1' agentskills validate skills/<skill-name>
 ```
+
+## Add or update a rule pack
+
+Rules are the thin, always-on layer (format:
+[ADR 0007](docs/decisions/0007-adopt-claude-native-rule-packs.md); intro:
+[rules/README.md](rules/README.md)):
+
+- `rules/common/` loads unconditionally — every line costs every session,
+  so keep files under ~100 lines and give each rule its why.
+- Language packs (`rules/<language>/`) mirror `common/`'s filenames, open
+  with an "extends" line, scope via `paths:` frontmatter, and override
+  common on conflict.
+- Deep guidance (patterns, setups, checklists) belongs in the companion
+  skill, not the rules — rules say *what*, skills say *how*.
 
 ## Documentation rules
 
