@@ -13,7 +13,7 @@ linked from [docs/index.md](docs/index.md#decisions-adrs--append-only).
 | `.specify/` | ✅ | Spec Kit engine: constitution, templates, scripts, workflows. |
 | `docs/` | ✅ | Durable documentation: product, ADRs, debt, index. |
 | `rules/` | ✅ | Canonical rule packs (common, typescript, python, shell) across topics coding-style / security / agent-behavior: thin always-on "what"; the "how" for the first two lives in companion skills (`coding-style`, `security-audit`) ([ADR 0007](docs/decisions/0007-adopt-claude-native-rule-packs.md)). `.claude/rules/` is a symlink into it. |
-| `agents/` | ✅ | Canonical agent definitions (research modality lanes, security reviewer). `.claude/agents/` is a symlink into it; Cursor cross-reads it ([ADR 0006](docs/decisions/0006-predefine-research-agents-by-modality.md)). |
+| `agents/` | ✅ | Canonical agent definitions (research modality lanes, security reviewer, root-cause analyst). `.claude/agents/` is a symlink into it; Cursor cross-reads it ([ADR 0006](docs/decisions/0006-predefine-research-agents-by-modality.md)). |
 | `commands/` | 🔜 (1) | Canonical slash commands. |
 | `hooks/` | ✅ | Security enforcement hooks — fail-closed PreToolUse guards + install-time dependency gate ([ADR 0008](docs/decisions/0008-adopt-a-layered-security-harness.md)); wiring is per-project opt-in. Memory hooks and per-harness event adapters still planned (1). |
 | `mcp-configs/` | 🔜 (1) | Canonical MCP server configs. |
