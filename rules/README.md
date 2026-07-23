@@ -2,8 +2,9 @@
 
 Always-on rule packs: short, normative constraints an agent follows in
 every session — the "what". Deep guidance — the "how" — lives in skills,
-loaded on demand (for these packs: the `coding-style` and `security-audit`
-skills). Rules stay thin because every always-loaded line competes with
+loaded on demand (for these packs: the `coding-style`, `security-audit`,
+and `debugging` skills). Rules stay thin because every always-loaded line
+competes with
 the task's own context. Rules are also only *context* — deterministic
 enforcement of the security rules lives in `hooks/security/`.
 

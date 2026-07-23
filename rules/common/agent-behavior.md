@@ -55,3 +55,18 @@ skills; this file is the short list of things to never do.
 - The same holds for types and lints: fixing the cause beats silencing the
   check. A suppression is a last resort that states its reason (per
   [coding-style](coding-style.md)).
+
+## Debug causes, not symptoms
+
+- Reproduce before you fix: without a command that failed before the
+  change and passes after it, "fixed" is a guess wearing a claim's
+  clothes.
+- Fix the cause, not the symptom. Swallowing the exception, deleting the
+  assertion, adding a retry or a sleep — each makes the failure invisible
+  while the defect ships. Any of these is only a *mitigation*, stated as
+  such with the real cause named.
+- Change one thing per attempt, and after two failed fixes stop patching
+  and re-investigate — each further guess is made in a context polluted
+  by the last one, so attempts stop converging. The full loop (evidence
+  before hypotheses, circuit breakers, RCA reporting) is the `debugging`
+  skill.
