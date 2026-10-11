@@ -18,7 +18,7 @@ The failure mode is predictable: the file grows to 400 lines, nobody maintains i
 ## 1. Size targets and hard limits
 
 - Target **~100 lines, hard ceiling 150**. Past 150, something belongs in `docs/` instead.
-- These aren't style preferences. Codex concatenates AGENTS.md files with a default **32 KiB cap and silently truncates** the rest; practitioners converge on <300 lines max (HumanLayer runs <60); Anthropic's own guidance: bloated CLAUDE.md files cause Claude to ignore your actual instructions.
+- These aren't style preferences. Codex concatenates AGENTS.md files with a default **32 KiB cap and silently truncates** the rest; practitioners converge on <300 lines max (HumanLayer runs <60); Anthropic's own guidance targets under 200 lines per CLAUDE.md, because longer files consume more context and reduce adherence.
 - The per-line test (Anthropic's): **"Would removing this line cause the agent to make mistakes?"** If not, cut it.
 - A rule that keeps being ignored is not a prompting problem — the file is too long, or the rule belongs in a hook/linter where it's enforced deterministically.
 
@@ -114,7 +114,7 @@ Typical result: 300 lines → 80 lines + 4 docs under `docs/`. Information doesn
 
 **AGENTS.md is the canonical file.** As of 2026 it's read natively by Codex, Cursor, Copilot/VS Code (default on), Windsurf/Devin, Zed, and Cline — no mirror needed for any of those. Exactly two mainstream tools don't read it, and both get a **one-line import file** (never a symlink):
 
-- **Claude Code** reads only CLAUDE.md — it does *not* fall back to AGENTS.md. Create a `CLAUDE.md` whose body is exactly `@AGENTS.md`; Claude Code inlines the import at session start (depth ≤4, skipped inside code blocks). This is Anthropic's documented recommendation. Claude-specific lines go *below* the import.
+- **Claude Code** prefers CLAUDE.md: since v2.1.277 it reads AGENTS.md only when no CLAUDE.md exists in the working directory or above (its "Project instructions" setting can load both). Don't rely on that fallback — older versions ignore AGENTS.md, and the first Claude-specific line someone adds in a new CLAUDE.md silently hides AGENTS.md. Create a `CLAUDE.md` whose body is exactly `@AGENTS.md`; Claude Code inlines the import at session start (depth ≤4, skipped inside code blocks). This is Anthropic's documented recommendation. Claude-specific lines go *below* the import.
 - **Gemini CLI** reads only GEMINI.md by default. Either a `GEMINI.md` containing `@./AGENTS.md` (import processor is on by default), or skip the wrapper entirely and commit `.gemini/settings.json` with `"context": { "fileName": ["AGENTS.md"] }`.
 
 Why import, not symlink: a committed symlink on a Windows checkout (where `core.symlinks` defaults to false) silently becomes a plain text file whose entire content is the string "AGENTS.md" — every tool then loads a one-word context file with no error. The import needs no OS privileges, survives any checkout, and still allows tool-specific lines under it; drift is structurally impossible either way. If you find a hand-copied CLAUDE.md, replace its duplicated body with the import.
