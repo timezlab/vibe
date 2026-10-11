@@ -6,7 +6,8 @@ The first workable idea anchors everything after it — yours and the user's. Th
 
 - **Genuinely different, not strawmen.** Two variants of the same architecture plus a joke option is theater. Different approaches differ in something load-bearing: where state lives, what's built vs bought, what's manual vs automated, what ships first.
 - **Name each approach** ("SQLite-first", "thin-client", "wrap-the-CLI") so the conversation can refer to them without re-describing.
-- **Include the do-less option when honest.** "Cron job + existing dashboard" beating "new service" is a good brainstorming outcome, not a failure.
+- **Always include the simplest viable option** — often the do-less one. "Cron job + existing dashboard" beating "new service" is a good brainstorming outcome, not a failure. If it isn't your pick, say in one line why it loses.
+- **Don't pad to three.** Diverge in your head; present only options with a real trade-off. If one approach clearly dominates, present it alone with one line on what you ruled out — weak filler options are theater too.
 - **Check the premise itself.** Sometimes the strongest alternative is "don't build this — the pain named in the interview is solved by X that already exists". Raising that once is your job; pushing it after the user has heard and rejected it is not.
 
 ## Present with a recommendation

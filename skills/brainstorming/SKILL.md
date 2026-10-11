@@ -1,6 +1,6 @@
 ---
 name: brainstorming
-description: Turns a vague idea into a validated design brief through structured dialogue before any code is written — grounds itself in repo context, interviews the user one question at a time, proposes 2-3 genuinely different approaches with trade-offs, pressure-tests the premise, and lands an approved brief that hands off to Spec Kit or implementation. Use whenever the user wants to brainstorm, explore, or develop an idea — starting (init) a new project, shaping a new feature, "I want to build…", "should we do X or Y", comparing approaches, or any creative request whose requirements are still fuzzy — even if they only say "brainstorm", "lên ý tưởng", "phát triển ý tưởng", or describe a wish without a concrete spec.
+description: Turns a vague idea into a validated design brief through structured dialogue before any code is written — grounds itself in repo context, interviews the user one question at a time, proposes genuinely different approaches with trade-offs (the simplest viable one always among them), pressure-tests the premise, and lands an approved brief that hands off to Spec Kit or implementation. Use whenever the user wants to brainstorm, explore, or develop an idea — starting (init) a new project, shaping a new feature, "I want to build…", "should we do X or Y", comparing approaches, or any creative request whose requirements are still fuzzy — even if they only say "brainstorm", "lên ý tưởng", "phát triển ý tưởng", or describe a wish without a concrete spec.
 ---
 
 # Brainstorming
@@ -17,7 +17,7 @@ Five phases, in order. Don't skip ahead — each phase exists because the next o
 |---|---|---|
 | **1. Ground** | Explore repo context (README, AGENTS.md, docs, recent commits) before asking anything — for a feature in an existing product, also the code it touches and prior ADRs | [references/interviewing.md](references/interviewing.md) §Ground |
 | **2. Interview** | One question per message, each building on the last, until purpose, users, constraints, and success criteria are covered | [references/interviewing.md](references/interviewing.md) |
-| **3. Diverge** | Propose 2-3 genuinely different approaches with trade-offs; lead with your recommendation and reasons | [references/alternatives.md](references/alternatives.md) |
+| **3. Diverge** | Propose 2-3 genuinely different approaches with trade-offs, the simplest viable one always among them (one, if it clearly dominates); lead with your recommendation and reasons | [references/alternatives.md](references/alternatives.md) |
 | **4. Converge** | Present the design in sections scaled to complexity; checkpoint each section before moving on | [references/alternatives.md](references/alternatives.md) §Converge |
 | **5. Record & hand off** | Write the brief, self-review it, get the user's review, route to Spec Kit / ADR / implementation | [references/design-brief.md](references/design-brief.md) |
 
