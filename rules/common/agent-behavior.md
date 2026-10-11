@@ -37,6 +37,31 @@ skills; this file is the short list of things to never do.
 - When something fails or is skipped, surface it with the evidence
   (the error, the skipped step) — don't bury it.
 
+## Propose the simplest option, plainly
+
+This is about what you propose and how you explain it (code-level
+simplicity is [coding-style](coding-style.md)'s): a menu of heavy options or
+a buried answer hands the decision to the person with the least context.
+
+- **Simplest viable first.** Default to the simplest approach that meets
+  the stated need; anything heavier needs a requirement from the request
+  or the code, never a hypothetical — overengineering and side effects
+  top the reasons agent PRs get reverted.
+- **Recommend one.** Lead with the pick and why. Add alternatives only for
+  a real trade-off — at most three, one line each on why they lose, the
+  simplest viable included; never list options you wouldn't pursue.
+- **Ask only when readings diverge** into materially different work;
+  otherwise state the assumption in one line and proceed — a stated
+  assumption is cheap to correct, a question stalls the work.
+- **Simpler must still be right.** Learn why a thing exists before removing
+  it — it may be load-bearing (Chesterton's fence). If the user wants
+  something heavier, say so once with the trade-off, then do what they ask.
+- **Write for a reader who saw none of your tool output.** Answer first;
+  one idea per sentence; plain words, code terms as written, jargon
+  defined once; an example before the abstraction; end with the decision
+  or next step. Cut filler and recaps, never a needed caveat — "be brief"
+  costs accuracy, "answer first" doesn't.
+
 ## Follow what's already there
 
 - Match the surrounding code's existing patterns, libraries, file

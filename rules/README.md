@@ -20,8 +20,9 @@ rules/
 
 Topics per pack: `coding-style` (how code reads), `security` (what's
 safe), and `agent-behavior` (how the agent acts — scope, honesty,
-convention-following). `agent-behavior` is common-only: conduct doesn't
-vary by language, so there's no per-language override to write.
+how it proposes and explains, convention-following). `agent-behavior`
+is common-only: conduct doesn't vary by language, so there's no
+per-language override to write.
 
 - Language packs open with an "extends" line and only add or override.
   Where a language file conflicts with common, the language file wins —
