@@ -1,6 +1,6 @@
 ---
 name: tdd
-description: Test-driven development discipline for coding agents — write a test list, watch each test fail for the right reason, commit tests before implementing, write minimal code to green, refactor only on green, and never weaken a test to make it pass. Use whenever implementing any feature, bugfix, refactor, or behavior change — BEFORE writing any production code — including when the user says "implement X", "fix this bug", "add tests", "viết test", "làm theo TDD", "sửa bug", or when deciding whether existing tests actually verify behavior. Also use when a test is failing and the temptation is to change the test. Skip only for throwaway spikes, generated code, or pure config — and say so explicitly before skipping.
+description: Test-driven development discipline for coding agents — decide what earns a test (logic, bug fixes, costly error paths, public contracts; not UI rendering, copy, prompt wording, re-typed constants, or absence checks), write a test list, watch each test fail for the right reason, commit tests before implementing, write minimal code to green, refactor only on green, and never weaken a test to make it pass. Use when implementing or changing logic — a feature, bugfix, refactor, or behavior change — BEFORE writing that production code, including when the user says "implement X", "fix this bug", "add tests", "viết test", "làm theo TDD", "sửa bug"; when deciding which tests are worth writing or deleting ("too many tests", "test quá nhiều") or whether existing tests actually verify behavior; and when a test is failing and the temptation is to change the test. UI-only, copy, prompt-text, docs, and config changes get no new tests unless the user asks — say so and verify them directly.
 ---
 
 # Test-Driven Development
@@ -20,10 +20,68 @@ orchestrator or user can read. That structure is this skill.
 **Core principle:** if you didn't watch the test fail, you don't know that it
 tests anything.
 
+## Scope — what earns a test
+
+**A test earns its place only if it would catch a plausible bug and survive a
+harmless change.** Every test is code someone reads, runs, and updates; a suite
+of change detectors teaches everyone to regenerate expectations instead of
+reading failures. The usual agent failure is too many tests, not too few —
+agent PRs run roughly double the human test-to-source ratio.
+
+**Test by default** — logic that can break in a way a user would feel:
+
+- Business rules, calculations, parsers, validation, state machines and
+  reducers — especially branching conditions.
+- Every logic bug fix (see Bug fixes).
+- Boundaries and error paths where failure is costly: money, auth and
+  permissions, data loss, security invariants.
+- Public contracts other code relies on (API, schema, CLI), plus one
+  integration test through the real wiring.
+
+**Don't test unless the user asks.** These are *assertion kinds*, not
+directories — moving a copy check from `components/` to `lib/` doesn't make it
+a logic test:
+
+- **UI rendering** — markup, attributes, SVG, class names, styles, layout,
+  snapshots. When behavior lives inside a component, extract it into a pure
+  function or hook and test *that*; the UI layer stays a thin shell.
+- **Text** — UI copy, prompt wording, tool descriptions, docs, word or line
+  counts, banned-word lists. Judge a prompt by its outputs (an eval), never by
+  its wording.
+- **Values re-typed from the code** — constants, config, price or model tables
+  copied into the expected side; a typo in the table gets copied too.
+- **Absence** — that a removed flag, field, or file stays removed. Deleting the
+  code is the change; a guard against re-adding it only catches a deliberate
+  edit. If the removal decides which branch now runs, test that surviving
+  behavior instead.
+- **Mechanics** — source inspection (`inspect.getsource`, grepping the repo),
+  call order, mock call counts, SQL substrings on a fake, constructor-argument
+  dicts. Assert the observable result instead, or run a real in-memory
+  dependency.
+- **Trivial code** — getters, pass-throughs, branchless wiring, and anything
+  the type checker, linter, or framework already guarantees.
+
+**Before writing each test**, answer three questions; any "no" drops it:
+
+1. Can you finish "this fails if ___" with a bug a developer could plausibly
+   introduce?
+2. Would it survive a harmless change — a rename, reworded copy, a restyle, a
+   refactor of internals?
+3. Is it the only guard on that behavior — not types, lint, the framework, or
+   another test?
+
+**How many:** one test per behavior, not per method, prop, or input. Variations
+of one behavior share a table-driven test; add a row only for an equivalence
+class or boundary the code treats differently — edge cases (empty, null, huge,
+concurrent) included. Tripwire: if new test lines outgrow the production lines
+of the change, re-run the three questions on every test before going on.
+
 ## The loop (Canon TDD)
 
 1. **List** — write down the test scenarios the change needs, as behaviors, not
-   implementation steps. Don't design internals here. Record the list somewhere
+   implementation steps, and triage them against Scope: keep the entries that
+   pass its three questions, and note what you dropped in one line ("skipped:
+   copy, markup"). Don't design internals here. Record the list somewhere
    visible — your reply, a comment atop the test file, or the task's todos. The
    list is the spec you are about to hold yourself to; a list that exists only
    in your head is the one you'll quietly shorten when items get inconvenient.
@@ -130,7 +188,9 @@ safety net and refactoring is guessing.
 Reproduce the bug as a failing test before fixing it. Proving the bug exists is
 what separates a fix from a tweak — and the test stays as the regression guard.
 If a high-level test caught the bug, write the lowest-level test that reproduces
-it and fix from there. Never fix a bug without a test that failed because of it.
+it and fix from there. Never fix a logic bug without a test that failed because
+of it. A typo in copy or a styling glitch is not a logic bug: fix it and check
+the result directly (Scope).
 
 ## What a good test looks like
 
@@ -140,21 +200,14 @@ it and fix from there. Never fix a bug without a test that failed because of it.
 - One behavior per test, named after that behavior.
 - Arrange–act–assert, minimal setup. A huge setup block is a design smell in the
   code under test, not a fact of life.
-- **Test logic, not UI components.** Default targets are business rules, data
-  transforms, and state logic — not component rendering. Don't write UI
-  component/snapshot tests unless the user asks for them: they are brittle
-  (break on styling churn), slow, and mostly verify the framework. When a
-  behavior lives inside a component, that's the cue to extract it into a pure
-  function or hook and test *that* — the UI layer stays a thin shell.
 - **Mock external boundaries only** (network, clock, filesystem, DB); run your
   own code for real. Before adding any mock or test utility — and whenever a
-  suite is green but confidence is low — read
+  suite is green but confidence is low, or you are pruning one — read
   [references/anti-patterns.md](references/anti-patterns.md) — most fake-green
-  suites are built from the patterns catalogued there.
+  and bloated suites are built from the patterns catalogued there.
 
-Coverage is risk-driven, not ritual: test until fear turns to boredom. Error
-paths and edge cases (empty, null, huge, concurrent) usually hold more fear than
-another happy path.
+Coverage is risk-driven, not a number: spend tests where a bug would hurt and
+the code could plausibly get it wrong.
 
 ## When TDD doesn't apply
 
@@ -164,10 +217,15 @@ another happy path.
   unmerged spike commit is labeled as such). "Spike" is not a word that defers
   TDD to later; it's a promise the code won't survive without tests.
 - **Generated code and pure configuration.**
-- If tempted to skip for any other reason ("too simple", "just this once", "I'll
-  add tests right after"), that's a rationalization — simple code breaks too, and
-  tests-after verify what you remembered to build, not what was required. When
-  genuinely unsure, ask the user rather than deciding silently.
+- **Changes Scope says not to test** — UI layout and styling, copy and prompt
+  text, docs, constants, removals. Verify them the cheap way instead (look at
+  the rendered result, run the eval or the type checker) and say which check
+  you used.
+- Skip by *what the change is*, never by *how sure you feel*. When the change
+  has logic, "too simple", "just this once", and "I'll add tests right after"
+  are rationalizations — simple logic breaks too, and tests-after verify what
+  you remembered to build, not what was required. When genuinely unsure, ask
+  the user rather than deciding silently.
 
 ## Boundaries
 

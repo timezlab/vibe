@@ -50,8 +50,9 @@ skills; this file is the short list of things to never do.
 - Never weaken, skip, comment out, or delete a test to make a suite pass.
   A green run that no longer asserts the behavior is worse than a red one —
   it hides the regression instead of reporting it.
-- Ship a bug fix with a regression test that fails before the fix and
-  passes after; a fix with no test invites the same bug back.
+- Ship a logic bug fix with a regression test that fails before the fix
+  and passes after; a fix with no test invites the same bug back. (Copy
+  and styling fixes are checked directly — the `tdd` skill's Scope.)
 - The same holds for types and lints: fixing the cause beats silencing the
   check. A suppression is a last resort that states its reason (per
   [coding-style](coding-style.md)).

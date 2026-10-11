@@ -1,7 +1,7 @@
 # Testing Anti-Patterns
 
-Read this when writing or changing tests, adding mocks or test utilities, or
-when a suite is green but confidence is low. Core principle: **test what the
+Read this when writing or changing tests, adding mocks or test utilities,
+when a suite is green but confidence is low, or when pruning a bloated suite. Core principle: **test what the
 code does, not what the mocks do.**
 
 ## Contents
@@ -12,8 +12,9 @@ code does, not what the mocks do.**
 4. Incomplete mocks
 5. Assertion theater
 6. Test-only production code
-7. The classic catalog (quick reference)
-8. Gate: before you add a mock
+7. Change detectors and permutation explosion
+8. The classic catalog (quick reference)
+9. Gate: before you add a mock
 
 ## 1. Tautological tests
 
@@ -90,7 +91,35 @@ reach them (`resetForTesting()`, `if (process.env.TEST_MODE)`). The production
 API grows a second, untested personality. Restructure instead: inject the
 dependency, extract the pure function, or test through the real interface.
 
-## 7. The classic catalog (quick reference)
+## 7. Change detectors and permutation explosion
+
+A change detector fails on any edit to what it watches — a reword, a rename, a
+restyle — and almost never on a real bug. Its "fix" is regenerating the
+expectation, which teaches everyone to stop reading failures. Shapes seen in
+one real agent-written suite:
+
+- A whole system prompt compared to a 300-line golden file, refreshed with
+  `UPDATE_GOLDEN=1` after every wording change.
+- Literal-token pins on prose: `"ALWAYS" not in description`,
+  `len(words) <= 120`, `"80,000" in prompt`.
+- Source inspection: `"trigger=profile.x" in inspect.getsource(build)` — breaks
+  on a rename, passes when the call is wrong.
+- SQL substrings on a recording fake: `"ESCAPE" in sql` held for the broken
+  clause too.
+- Expected values copied from a price or config table, and absence guards like
+  `not hasattr(config, "old_flag")`.
+
+Fix: assert observable behavior — the rows a real in-memory DB returns, the
+prompt's output on an eval case — or delete the test. SKILL.md's Scope lists
+these kinds so they never get written.
+
+**Permutation explosion** is the sibling smell: one behavior asserted over and
+over — the same five invalid IDs re-run for every route that shares one
+validator, 29 assertions for a one-line `includes(raw.trim().toLowerCase())`
+copied across three parsers. Test the shared predicate once, as a table; give
+each caller one case proving it uses the predicate.
+
+## 8. The classic catalog (quick reference)
 
 From James Carr's list — name them when you see them:
 
@@ -106,7 +135,7 @@ From James Carr's list — name them when you see them:
 | Success Against All Odds | written to pass, never seen red |
 | Hidden Dependency | passes only after some other test has run |
 
-## 8. Gate: before you add a mock
+## 9. Gate: before you add a mock
 
 1. What side effects does the real thing have? Do I understand them?
 2. Does this test depend on any of those side effects?
