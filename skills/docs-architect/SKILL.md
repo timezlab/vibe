@@ -5,7 +5,7 @@ description: Sets up and runs a repo's spec + documentation system end-to-end �
 
 # Docs Engineer
 
-**The repository is the system of record.** If a decision, plan, or constraint lives only in chat or someone's head, it doesn't exist for the next agent or teammate.
+**The repository is the system of record.** If a decision, plan, or constraint lives only in chat or someone's head, it doesn't exist for the next agent or teammate. That applies to *settled* decisions: while one is still being discussed, it lives in a single draft and reaches the repo in one pass once the user settles it (see *Discussion mode*).
 
 Two artifact classes, two lifecycles — most documentation failures come from mixing them up:
 
@@ -53,8 +53,20 @@ Every doc serves one **context tier**. Hot docs crowd out the task, so they must
 | Write or audit AGENTS.md / CLAUDE.md | **Hot-doc discipline** | `references/agents-md.md` |
 | A refactor happened / docs feel stale | **Freshness sweep** | `references/freshness.md` |
 | A feature just shipped | **Graduate the spec**: distill decisions into ADRs, mark spec done in place | `references/freshness.md` §Graduation |
+| Docs content is still being discussed (options open, nothing settled) | **Discussion mode**: one draft in memory, docs written once on the go-ahead | §Discussion mode below |
 
 Load references per sub-task as you reach them — one or two in context at a time, never all up front.
+
+## Discussion mode — draft first, write once
+
+While a decision is still under discussion — options on the table, open questions, no go-ahead yet ("chốt", "ok ghi đi", "apply it") — leave `specs/`, `docs/`, AGENTS.md, and ARCHITECTURE.md untouched. A mid-discussion edit is redone when the next answer changes it, costs a read-and-edit per file, and fills context toward compaction.
+
+- **One draft, in auto-memory.** In Claude Code, keep one memory file (type `project`, name `draft-<topic>`, plus its MEMORY.md pointer line, in the memory system's own format): it survives compaction and new sessions, chat doesn't. A harness without auto-memory gets one scratch file outside the docs tree instead (e.g. a gitignored `.vibe/drafts/<topic>.md`).
+- **It holds:** the target files, settled points with their why, rejected options (one line each), open questions. Draft final wording only for passages the user is reviewing word by word.
+- **Write it when a point settles**, batching several points per write — not after every message. Resuming after compaction or in a new session, read the draft before replying; it outranks the summary.
+- **Apply once.** On the go-ahead, read each target file once and make all of its changes in one edit pass, then delete the draft and its MEMORY.md line so it stops loading into future sessions. Do the same deletion if the user drops the topic.
+
+A one-shot request ("add this debt entry", "fix this stale path") skips discussion mode: just make the edit.
 
 ## Where does X get written?
 
