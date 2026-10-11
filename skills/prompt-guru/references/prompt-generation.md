@@ -22,7 +22,7 @@ Never draft from a vague description; a prompt can only be as specified as the t
 5. **Success criteria + 1–2 example inputs with ideal outputs** — Anthropic's prerequisite for prompt engineering is a success definition and a way to test it (criteria should be specific and measurable, and usually multidimensional: quality *and* latency *and* cost). If the user can't produce one example of "good", the task is underspecified: help specify it before writing anything.
 6. **Failure behavior** — what should happen when the agent can't do the task (missing info, out of scope, tool failure)? Undefined failure behavior is the single most common gap in new prompts.
 
-Quick constraint sweep (only note the ones that apply): max response length · multi-language · memory across turns · determinism needs · actions requiring human approval.
+Quick constraint sweep (only note the ones that apply): max response length · multi-language · memory across turns · determinism needs · actions requiring human approval · untrusted input the agent reads (issues, emails, web pages — wrap it as data, never instructions).
 
 ## 2. Choose an architecture
 
@@ -41,7 +41,7 @@ Ordering rule when combining: identity always first; contracts and output format
 
 ## 3. Canonical skeleton
 
-A working scaffold, not a vendor-prescribed order — no provider mandates a section sequence; what the docs do mandate is the *pieces* (role first via the system param, clearly delimited sections, long data on top, query at the end). Note that few-shot examples don't have to live in the system prompt: Anthropic's own tooling places them at the start of the first user message, and if any part of the prompt varies per call, split fixed from variable content with `{{variable}}` placeholders (wrapped in tags) — that separation is what makes the prompt testable and eval-able later.
+A working scaffold, not a vendor-prescribed order — no provider mandates a section sequence (OpenAI's GPT-5.6 guide suggests one: Role → Personality → Goal → Success criteria → Constraints → Tools → Output → Stop rules); what the docs do mandate is the *pieces* (role first via the system param, clearly delimited sections, long data on top, query at the end). Note that few-shot examples don't have to live in the system prompt: Anthropic's own tooling places them at the start of the first user message, and if any part of the prompt varies per call, split fixed from variable content with `{{variable}}` placeholders (wrapped in tags) — that separation is what makes the prompt testable and eval-able later.
 
 ```
 [Identity: who the model is and what it produces — one paragraph, specific.

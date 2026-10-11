@@ -10,7 +10,7 @@ When the bundled references can't answer, fetch official sources — don't pad t
 
 ## 1. When to research — and when not
 
-Content snapshot date of the bundled references: **2026-07-22** (this line is the runtime copy; MAINTENANCE.md mirrors it for maintainers — update both together).
+Content snapshot date of the bundled references: **2026-10-11** (this line is the runtime copy; MAINTENANCE.md mirrors it for maintainers — update both together).
 
 Research when ANY of these holds:
 
@@ -26,15 +26,19 @@ Official vendor documentation only. Blogs, Reddit, and social posts are fine as 
 
 | Provider / topic | Official sources |
 |---|---|
-| Anthropic Claude | platform.claude.com/docs — "Prompting best practices", prompt-engineering overview, "Define success criteria" (test-and-evaluate/develop-tests); anthropic.com/engineering blog; published system prompts: platform.claude.com/docs/en/release-notes/system-prompts |
-| Agent Skills | platform.claude.com/docs Agent Skills best-practices; anthropic.com/engineering "Equipping agents for the real world with Agent Skills" |
-| OpenAI | developers.openai.com prompting guides (per model family; cookbook.openai.com redirects there); platform.openai.com/docs guides: prompt-engineering, reasoning-best-practices; OpenAI Model Spec |
-| Google Gemini | ai.google.dev/gemini-api/docs: prompting-strategies, model developer guides, thinking, long-context; cloud.google.com Vertex AI prompt-design-strategies |
-| Meta Llama | llama.com prompt-format and model docs |
-| Mistral | docs.mistral.ai (prompting capabilities) |
+| Anthropic Claude | platform.claude.com/docs — "Prompting best practices" hub + per-model prompting pages, effort, thinking, model-deprecations, migration guide, "Define success criteria" (test-and-evaluate/develop-tests); anthropic.com/engineering blog; published system prompts: platform.claude.com/docs/en/release-notes/system-prompts |
+| Claude Code (CLAUDE.md, skills, subagents) | code.claude.com/docs/en/ — memory, skills, sub-agents, env-vars |
+| Agent Skills | agentskills.io/specification; platform.claude.com/docs Agent Skills best-practices; anthropic.com/engineering "Equipping agents for the real world with Agent Skills" |
+| OpenAI | developers.openai.com/api/docs/guides — latest-model pages (GPT-6 Astra, GPT-5.6), prompt guidance, upgrade guides, reasoning, function-calling, prompt-engineering; /api/docs/deprecations + /changelog; OpenAI Model Spec (github.com/openai/model_spec) |
+| Google Gemini | ai.google.dev/gemini-api/docs: latest-model, what's-new pages, prompting-strategies, thinking, caching, media-resolution, long-context; docs.cloud.google.com Vertex AI prompt-design-strategies |
+| Meta (Llama, Muse) | dev.meta.ai/llama/docs prompt formats; dev.meta.ai/docs/muse-glimmer |
+| Mistral | docs.mistral.ai (prompting capabilities, reasoning, models overview); huggingface.co/mistralai model cards |
 | Qwen | huggingface.co/Qwen model cards (usage/best-practice sections) |
-| DeepSeek | api-docs.deepseek.com; R1 usage recommendations |
-| xAI Grok | docs.x.ai (prompt-engineering, reasoning guides) |
+| DeepSeek | api-docs.deepseek.com (thinking_mode guide, updates); DeepSeek model cards; R1 usage recommendations |
+| gpt-oss | OpenAI harmony guide (developers.openai.com/cookbook/articles/openai-harmony); huggingface.co/openai model cards |
+| Gemma | ai.google.dev/gemma/docs (prompt formatting); huggingface.co/google model cards |
+| Kimi / GLM / MiniMax | platform.kimi.ai/docs; docs.z.ai; platform.minimax.io/docs |
+| xAI Grok | docs.x.ai/developers (reasoning, release notes, migration pages) |
 
 ## 3. How to run it
 

@@ -1,6 +1,6 @@
 # Skills Authoring & Optimization
 
-Distilled from platform.claude.com/docs Agent Skills best practices and anthropic.com/engineering "Equipping agents for the real world with Agent Skills".
+Distilled from platform.claude.com/docs Agent Skills best practices, the Agent Skills specification (agentskills.io), Claude Code's skills docs (code.claude.com/docs/en/skills), and anthropic.com/engineering "Equipping agents for the real world with Agent Skills".
 
 ## Contents
 1. How triggering works (why the description is everything)
@@ -15,20 +15,24 @@ Distilled from platform.claude.com/docs Agent Skills best practices and anthropi
 ## 1. How triggering works
 
 - Only the skill's **name + description** are preloaded; Claude chooses among potentially 100+ skills on the description alone. The body loads only after triggering. Therefore: triggering problems are *description* problems; behavior problems are *body* problems. Diagnose which one you have before editing.
+- The listing is truncated: Claude Code cuts `description` + `when_to_use` at 1,536 characters, and when the listing outgrows its budget (1% of the context window) it drops descriptions starting with the least-used skills. Put the trigger first, so whatever survives still triggers.
 - Claude tends to **under-trigger**: it consults skills only for tasks it can't trivially handle itself. Descriptions should be a little pushy — enumerate the concrete user phrasings and situations that should trigger, including indirect ones ("even if they don't explicitly say 'dashboard'").
 
 ## 2. Naming and description
 
-- Name: lowercase, numbers, hyphens, ≤64 chars. Gerund form (`processing-pdfs`) or a clear noun phrase. Never `helper`/`utils`, never reserved words ("anthropic", "claude").
+- Name: lowercase, numbers, hyphens, ≤64 chars; no leading, trailing, or doubled hyphen; must equal the skill's directory name (spec). Gerund form (`processing-pdfs`) or a clear noun phrase. Never `helper`/`utils`, never reserved words ("anthropic", "claude").
 - Description: ≤1024 chars, **third person**, and must contain both halves — *what it does* + *when to use it* — with concrete trigger terms:
   - Good: "Extracts text and tables from PDF files. Use when working with PDFs or when the user mentions forms, scanned documents, or document extraction."
   - Bad: "Helps with documents."
 - ALL when-to-use information lives in the description, none in the body — the body is invisible until after the trigger decision.
 - Cover near-miss phrasings and the competing-skill boundary ("use X-skill for spreadsheets; this skill for PDFs only").
+- Portability: outside Claude Code (claude.ai uploads, the Skills API, `package_skill.py`) only the spec's frontmatter fields are allowed — `name`, `description`, `license`, `compatibility` (≤500 chars), `metadata`, `allowed-tools`. Any other key (e.g. Claude Code's `when_to_use`) fails packaging or upload with a hard error.
 
 ## 3. Progressive disclosure and file layout
 
-Three levels: (1) name+description — always in context; (2) SKILL.md body — loaded on trigger, keep **<500 lines**; (3) references/scripts/assets — loaded or executed on demand, zero cost until used.
+Three levels: (1) name+description — always in context (~100 tokens); (2) SKILL.md body — loaded on trigger, keep **<500 lines** (spec: under ~5k tokens); (3) references/scripts/assets — loaded or executed on demand, zero cost until used.
+
+After compaction, Claude Code keeps only the start of each invoked skill (first ~5k tokens per skill, 25k combined, oldest dropped first) — put the rules that must survive near the top of SKILL.md.
 
 - Split by domain with descriptive filenames (`references/aws.md`, `references/gcp.md`) so only relevant material loads. Split out mutually-exclusive or rarely-used content first.
 - Keep reference links **one level deep** from SKILL.md — nested chains cause partial reads (`head -100`) and missed content. Tell the reader explicitly when to read each file.
@@ -64,6 +68,7 @@ Three levels: (1) name+description — always in context; (2) SKILL.md body — 
 - Iterate with two instances: Claude A edits the skill; Claude B (fresh context, skill installed) runs real tasks. Feed B's failures back to A. Never trust the author-context's own judgment of the skill — it can't experience cold-start reading.
 - Watch *how* B navigates: unexpected read order, skipped reference files, or a file re-read repeatedly all signal structural problems, not content problems.
 - Test on every model tier that will use the skill (Haiku needs more guidance than Opus).
+- Re-test on each new model generation: skills written for earlier models are often too prescriptive for the newest ones (documented for Claude Fable 5) — cut step-by-step scaffolding first and keep the outcome and constraints.
 - Generalize from feedback — fix the pattern, not the example; avoid overfitting the skill to the test prompts.
 
 ## 8. Review checklist for an existing skill

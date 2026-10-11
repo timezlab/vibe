@@ -1,6 +1,6 @@
 ---
 name: prompt-guru
-description: Creates and optimizes prompts end-to-end — writes new system prompts, agent instructions, SKILL.md skills, CLAUDE.md/AGENTS.md files, subagent briefs, and tool descriptions from a bare task description, and rewrites, debugs, or ports existing ones — following official provider best practices for Anthropic Claude, OpenAI GPT/o-series, Google Gemini, and open-weight models (Llama, Mistral, Qwen, DeepSeek, Grok), with a research step that fetches current vendor docs when the target model or domain isn't covered. Use whenever the user asks to create, improve, or debug any prompt, system prompt, agent persona, skill, or tool description — including when they only describe what an agent or bot should do ("build me an agent that…") without saying the word "prompt" — and when they complain that an agent ignores instructions, over- or under-triggers a skill/tool, hallucinates, produces the wrong format, or gives poor output quality traceable to its instructions.
+description: Creates and optimizes prompts end-to-end — writes new system prompts, agent instructions, SKILL.md skills, CLAUDE.md/AGENTS.md files, subagent briefs, and tool descriptions from a bare task description, and rewrites, debugs, or ports existing ones — following official provider best practices for Anthropic Claude, OpenAI GPT, Google Gemini, and open-weight and other models (Llama, Mistral, Qwen, DeepSeek, gpt-oss, Gemma, Kimi, GLM, Grok), with a research step that fetches current vendor docs when the target model or domain isn't covered. Use whenever the user asks to create, improve, or debug any prompt, system prompt, agent persona, skill, or tool description — including when they only describe what an agent or bot should do ("build me an agent that…") without saying the word "prompt" — and when they complain that an agent ignores instructions, over- or under-triggers a skill/tool, hallucinates, produces the wrong format, or gives poor output quality traceable to its instructions.
 ---
 
 # Prompt Engineer
@@ -49,9 +49,9 @@ Then read the provider file for the target model (always, when the provider is k
 | Target model | Read |
 |--------------|------|
 | Anthropic Claude | [references/provider-claude.md](references/provider-claude.md) |
-| OpenAI GPT-4.1 / GPT-5.x / o-series | [references/provider-openai.md](references/provider-openai.md) |
+| OpenAI GPT-6 / GPT-5.x / GPT-4.1 (legacy o-series) | [references/provider-openai.md](references/provider-openai.md) |
 | Google Gemini | [references/provider-gemini.md](references/provider-gemini.md) |
-| Llama, Mistral, Qwen, DeepSeek, Grok, other open-weight | [references/provider-open-models.md](references/provider-open-models.md) |
+| Llama, Muse, Mistral, Qwen, DeepSeek, gpt-oss, Gemma, Kimi, GLM, MiniMax, Grok, other open-weight | [references/provider-open-models.md](references/provider-open-models.md) |
 
 Most optimize jobs need `prompting-techniques.md` + one artifact reference + one provider reference; the create path adds `prompt-generation.md` on top (four files). Read whole reference files, not the first 100 lines.
 
@@ -67,6 +67,7 @@ Follow [references/prompt-generation.md](references/prompt-generation.md): intak
 - **Rewrite** — right idea, wrong shape (vague, negative, aggressive caps, wrong altitude, missing the why).
 - **Add** — a genuine gap tied to an observed/likely failure mode. Add instructions only for failures, not for completeness.
 - **Restructure** — ordering and sectioning (long data on top, instructions at the end, clearly delimited sections).
+- **Move** — settings written as prose that belong in the request (sampling, reasoning effort, output schema): set them as API parameters per the provider file, or drop them where the model ignores or rejects them.
 
 **Then rewrite.** Apply the core principles below plus the reference specifics. Preserve the author's intent and domain rules exactly — you are changing the *engineering* of the prompt, not its *policy*. If a domain rule looks wrong, flag it in the change log instead of silently changing it.
 
@@ -96,7 +97,7 @@ Deliver: (a) the full prompt, (b) the change log grouped by Cut / Rewrite / Add 
 ## Scope notes
 
 - **Language**: keep the produced prompt in the language its model will consume (for rewrites, the language it was written in), unless the user asks otherwise; write the change log and all communication in the user's language.
-- **Provider conflicts**: where a provider file contradicts the general references (e.g., Gemini wants instructions after the data; OpenAI wants them duplicated top and bottom; DeepSeek R1 forbids system prompts and few-shot), the provider file wins for that target. Official vendor guidance fetched via the research step that is newer than the snapshot date wins over the provider file — and is a signal to update it per MAINTENANCE.md.
+- **Provider conflicts**: where a provider file contradicts the general references (e.g., Gemini wants instructions after the data; OpenAI wants them duplicated top and bottom; original DeepSeek R1 weights forbid system prompts and few-shot), the provider file wins for that target. Official vendor guidance fetched via the research step that is newer than the snapshot date wins over the provider file — and is a signal to update it per MAINTENANCE.md.
 - For a provider not covered by any provider file and unreachable via research: apply the general references, state that no provider-specific guidance was available, and recommend checking that vendor's official prompting docs.
 - **Updating this skill itself** (refreshing provider guidance, adding a provider, fixing stale advice): follow [MAINTENANCE.md](MAINTENANCE.md) — not needed for normal use.
 - If asked to build or optimize a prompt whose *content* is the problem (wrong requirements, unclear product intent), say that prompt engineering can't fix an unspecified task — help specify it first (the intake questions in prompt-generation.md §1 are the tool for that).

@@ -1,6 +1,6 @@
 # System Prompts & Agent Instructions
 
-Distilled from anthropic.com/engineering: "Effective context engineering for AI agents", "Building effective agents", "Claude Code: Best practices for agentic coding", "How we built our multi-agent research system" — plus structural patterns observable in Anthropic's published Claude.ai system prompts (release notes).
+Distilled from anthropic.com/engineering: "Effective context engineering for AI agents", "Building effective agents", "Claude Code: Best practices for agentic coding", "How we built our multi-agent research system" — plus structural patterns observable in Anthropic's published claude.ai system prompts (platform.claude.com/docs/en/release-notes/system-prompts, one page per model; last read: Opus 5.5, 2026-09-22).
 
 ## Contents
 1. The attention-budget mindset
@@ -45,27 +45,29 @@ Observable in the published Claude.ai system prompts:
 
 - **Third-person descriptive voice** for persona: "Claude uses a warm tone", "Claude avoids over-formatting" — traits described, not orders barked. Works well for stable persona/character; imperative voice remains fine for task workflow steps.
 - **Trigger–response pairing dominates**: "If the person asks X, Claude does Y." Behaviors anchored to observable conditions, not general dispositions.
-- **Strategic mix**: aspirational positives for judgment areas + a small number of hard prohibitions + pervasive conditionals.
-- **Named failure modes are named explicitly**: banned filler words are listed verbatim ("avoids 'genuinely', 'honestly'"), not gestured at. Explicitness beats inference for known failure modes.
+- **Strategic mix**: aspirational positives for judgment areas + a small number of hard prohibitions + pervasive conditionals. Capitalized NEVER / MUST appear only inside the one hard-safety block.
+- **Named failure modes are named explicitly**: "a request to change one thing in a longer piece gets the change, not the whole piece again"; "avoids more than one [question] per response" — not gestured at. Explicitness beats inference for known failure modes.
+- **Examples carry their why**: each `<example>` holds the user turn, the response (or a `<bad_response>` / `<good_response>` pair), and a `<rationale>` explaining what the good response does.
 - **Nested XML-ish section tags** (`<refusal_handling>`, `<tone_and_formatting>`) with prose paragraphs inside — prose composes better than bullet fragments for behavioral nuance.
-- **Built-in epistemic humility**: "Claude often can't know either way and explicitly says so."
+- **Built-in epistemic humility**: "Claude often can't know either way and says so."
 
 ## 5. CLAUDE.md / AGENTS.md specifics
 
-- These files are *always-loaded* system-prompt extensions — the attention budget applies at full force. Anthropic's own warning: "Bloated CLAUDE.md files cause Claude to ignore your actual instructions."
+- These files are *always-loaded* system-prompt extensions — the attention budget applies at full force. Claude Code's memory docs target under 200 lines per CLAUDE.md file: longer files consume more context and reduce adherence.
 - Include only what the model **cannot infer**: unguessable build/test commands, style deltas from language defaults, repo etiquette (branch naming, merge vs rebase), environment quirks, known gotchas.
 - Exclude anything derivable from the code, standard conventions, or generic best practices ("write tests", "handle errors") — the model already knows.
-- Move situational knowledge into skills or on-demand child files; keep the root file a table of contents (~100 lines is a good target).
+- Move situational knowledge into skills or on-demand child files; keep the root file a table of contents. `@imports` don't reduce context cost — imported files load at launch too (max four hops); block-level HTML comments are stripped before injection, so maintainer notes there cost nothing.
+- Claude Code (v2.1.277+) reads AGENTS.md only when no CLAUDE.md exists in the working directory or above, unless the "Project instructions" setting (`/config`) is `claude-md-and-agents-md` — a repo that keeps both should make CLAUDE.md import AGENTS.md (`@AGENTS.md`).
 - Emphasis ("IMPORTANT", "YOU MUST") does boost adherence — which is exactly why it must be rationed to the one or two rules that deserve it.
 - Advisory instructions for judgment calls; deterministic hooks for zero-exception rules. If a rule must hold 100% of the time, enforce it in tooling, not prose.
 
 ## 6. Agentic prompts: verification, planning, long horizons
 
-- **Always give the agent a check it can run** — tests, build exit codes, screenshot diffs, validators — and require evidence of success, not claims. This is the single highest-leverage line in an agentic prompt.
+- **Always give the agent a check it can run** — tests, build exit codes, screenshot diffs, validators — and require evidence of success, not claims. This is the single highest-leverage line in an agentic prompt. A runnable check beats a generic "verify your work" sentence, whose effect is model-dependent: some models over-verify on that instruction (cut it), others at low effort skip self-review unless a real check is demanded (see the provider file).
 - Instruct root-cause fixes, not symptom suppression ("do not weaken the test to make it pass").
 - Encode a workflow when the task benefits: explore → plan → code → verify → commit. Gate coding on an approved plan for non-trivial tasks.
 - Transparency: have the agent show its plan before executing.
-- Long horizons: state how context compaction behaves; instruct persistent note-taking (structured state file + freeform progress notes); consider distinct first-window vs continuation prompts.
+- Long horizons: state how context compaction behaves; instruct persistent note-taking (structured state file + freeform progress notes); consider distinct first-window vs continuation prompts. Claude Code keeps only the start of each invoked skill after compaction (first ~5k tokens per skill, 25k combined) — put must-follow rules at the top, and enforce must-hold rules with hooks.
 - Prefer workflows (fixed pipelines with programmatic gates) for predictable tasks; reserve open-ended agent loops for tasks where the step count genuinely can't be predicted. Start with the simplest structure that works.
 
 ## 7. Subagent briefs and multi-agent orchestration
@@ -73,7 +75,7 @@ Observable in the published Claude.ai system prompts:
 Every subagent brief needs, explicitly:
 
 1. **Objective** — one sentence, narrow. "Research X" is a bad brief.
-2. **Context transplant** — the subagent has zero conversation memory; paste every fact it needs.
+2. **Context transplant** — a briefed subagent starts with zero conversation memory (only a forked one inherits the conversation); paste every fact it needs.
 3. **Tool guidance** — which tools, which sources, what to avoid.
 4. **Boundaries** — what NOT to do; scope fences against sibling agents.
 5. **Output contract** — exact return shape and length cap ("bullet list of file:line, no prose, under 200 words"). Without it you get pages of narration.
@@ -86,4 +88,4 @@ Orchestrator prompts additionally need **effort-scaling rules** (Anthropic's res
 - Zero-exception rules → hooks/validators/CI, not prose.
 - Per-request data → user messages with XML-tagged sections, not the system prompt.
 - Anything the current model reliably does unprompted → delete, then re-add only if a real failure appears.
-- Old workarounds for older models (caps-lock emphasis, prefill hacks, prescriptive CoT scripts) → re-test on the current model; most are now harmful (see prompting-techniques.md §4 and the provider file's deprecation notes).
+- Old workarounds for older models (caps-lock emphasis, prefill hacks, prescriptive CoT scripts) → re-test on the current model; most are now harmful (see prompting-techniques.md §4 and the provider file's deprecation notes). In Claude Code, `/doctor prompt-audit` (v2.1.283+) flags instructions written for older models, references to missing files or commands, and files that contradict each other.

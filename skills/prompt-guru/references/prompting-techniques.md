@@ -28,16 +28,16 @@ General techniques that hold across providers. Distilled primarily from Anthropi
 
 ## 3. Examples (multishot)
 
-- 3–5 examples, clearly delimited (e.g. `<example>` tags or an "Examples" section).
+- 3–5 examples, clearly delimited (e.g. `<example>` tags or an "Examples" section). Reasoning models are the exception some vendors document: OpenAI and DeepSeek find few-shot can hurt them — start zero-shot there and add examples only for an observed failure (see the provider file).
 - Make them **relevant** (mirror the real use case), **diverse** (cover distinct patterns and edge cases without embedding unintended regularities), **structured**.
 - Examples silently teach everything they contain — format, tone, length, reasoning style. Audit them for accidental patterns (all examples short → model answers short).
-- To teach reasoning style, include worked reasoning inside the examples; the model generalizes the demonstrated pattern.
+- To teach reasoning style, show it as a short rationale inside the example answers; the model generalizes the demonstrated pattern. Don't demand the model's own reasoning in tags — current Claude models may decline that, and thinking-capable models reason natively.
 
 ## 4. Reasoning / chain of thought
 
-- For **reasoning-capable models** (extended thinking / o-series / Gemini thinking): prefer general encouragement ("consider the edge cases before answering") over prescriptive step-by-step reasoning scripts — the model's own reasoning usually beats a hand-written plan, and forced CoT can degrade reasoning models. Control depth via API knobs (effort/budget), not prompt begging.
-- For **non-reasoning models**: structure manual CoT with explicit reasoning-then-answer sections (`<thinking>` / `<answer>`).
-- Add self-checks: `"Before you finish, verify your answer against <criteria>."`
+- Most current flagships always reason (every current Claude model, GPT-6 Astra / 6.1 Sol, Gemini 3.x). For them, prefer general encouragement ("consider the edge cases before answering") over prescriptive step-by-step reasoning scripts — the model's own reasoning usually beats a hand-written plan, and forced CoT can degrade reasoning models. Control depth via the effort / thinking-level parameter, not prompt begging; token budgets are legacy or rejected on current models.
+- Only for a model running **without reasoning** (GPT-4.1, a reasoning-off mode, an open model with thinking disabled): structure manual CoT with explicit reasoning-then-answer sections.
+- Self-checks: name the criteria (`"Before you finish, check the answer against <criteria>."`) and prefer a check the model can run. The right dose is model-dependent — some models over-verify when told to, others skip self-review at low effort unless a real check is demanded (see the provider file).
 - For agents: instruct reflection after tool results before deciding next steps.
 
 ## 5. Long context
@@ -50,6 +50,7 @@ General techniques that hold across providers. Distilled primarily from Anthropi
 
 - State what TO produce: `"Respond in smoothly flowing prose paragraphs"` — not `"Do not use markdown"`.
 - Prompt style begets output style: markdown-heavy prompts produce markdown-heavy answers.
+- Formatting defaults differ by model and drift by version (Claude Fable 5.1 formats less than its predecessors; GPT-6 Astra over-formats) — state the format the reader needs instead of copying a blanket "no markdown" rule across models, which can strip structure the answer needs.
 - For strict machine-readable output (JSON), use the provider's structured-output / response-schema API feature, not prompt begging.
 - Suppressing preamble: instruct `"Respond directly without preamble. Do not start with phrases like 'Here is…'"`.
 
