@@ -1,6 +1,6 @@
 # Prompting Techniques (provider-agnostic)
 
-General techniques that hold across providers. Distilled primarily from Anthropic's "Prompting best practices" and "Writing effective tools for agents"; cross-checked against OpenAI and Google guidance. For provider-specific deltas (delimiter preferences, deprecated features, model-family quirks), read the matching `provider-*.md` after this file.
+General techniques that hold across providers. Distilled primarily from Anthropic's "Prompting best practices" (now one page: per-model guidance, techniques for all models, migration — the old per-technique URLs return it), "Writing effective tools for agents", and its 2026-10 article on folding subagents into the main agent loop; cross-checked against OpenAI and Google guidance. For provider-specific deltas (delimiter preferences, deprecated features, model-family quirks), read the matching `provider-*.md` after this file; for which layer an instruction belongs in — system prompt vs user turn — read `prompt-layers.md`.
 
 ## Contents
 1. Clarity and directness
@@ -18,6 +18,7 @@ General techniques that hold across providers. Distilled primarily from Anthropi
 - Use numbered steps when order or completeness matters.
 - Attach motivation to rules; models generalize from the why. `"Your response is read aloud by TTS, so never use ellipses — the engine can't pronounce them"` covers cases a bare prohibition doesn't.
 - Modern frontier models follow instructions literally: say exactly what you want ("Change this function", not "Can you suggest improvements?") and request above-and-beyond behavior explicitly rather than relying on inference.
+- The inverse holds too: open-ended asks overshoot on current eager models — if you want ideas or a plan rather than the work, say so (documented for Sonnet 5.5). Likewise state your preference between two reasonable approaches; the model can't read it from the code or the data.
 
 ## 2. Structure and delimiters
 
@@ -61,6 +62,8 @@ Tool descriptions are prompts and are optimized the same way:
 - Describe each tool "as you would to a new hire": purpose, example usage, edge cases, input format, and explicit boundaries against sibling tools. Small description refinements yield outsized accuracy gains.
 - Unambiguous parameter names: `user_id`, not `user`. Poka-yoke arguments so mistakes are structurally hard (e.g., require absolute paths).
 - Few consolidated tools over many endpoint wrappers: `schedule_event` beats `list_users` + `list_events` + `create_event`. Namespace related tools (`asana_projects_search`).
+- Tool count is a prompt-quality lever: Anthropic reports tool selection degrading past roughly 30–50 tool definitions in the system prompt — keep short descriptions visible, load full schemas on demand (tool search / deferred loading), and group tools by user intent.
 - Returns must be token-efficient and human-readable: names over UUIDs, pagination/filtering/truncation defaults, optional `response_format: concise|detailed`.
 - Error messages must be actionable — suggest the fix, don't emit codes.
+- Put hard preconditions and permissions inside the tool: a tool that finds a missing prerequisite returns an instruction the model can act on, and a refused action returns a plain refusal the model can read — an instruction coming back from a tool at the moment it matters beats one pre-loaded in the prompt.
 - Let the model improve its own tools: give it failure transcripts and ask it to rewrite the descriptions (Anthropic reports large measured gains from Claude-optimized tool descriptions on its internal Slack/Asana tooling).
