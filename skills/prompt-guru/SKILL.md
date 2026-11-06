@@ -1,6 +1,6 @@
 ---
 name: prompt-guru
-description: Creates and optimizes prompts end-to-end — writes new system prompts, agent instructions, SKILL.md skills, CLAUDE.md/AGENTS.md files, subagent briefs, and tool descriptions from a bare task description, and rewrites, debugs, or ports existing ones — following official provider best practices for Anthropic Claude, OpenAI GPT, Google Gemini, and open-weight and other models (Llama, Mistral, Qwen, DeepSeek, gpt-oss, Gemma, Kimi, GLM, Grok), with a research step that fetches current vendor docs when the target model or domain isn't covered. Use whenever the user asks to create, improve, or debug any prompt, system prompt, agent persona, skill, or tool description — including when they only describe what an agent or bot should do ("build me an agent that…") without saying the word "prompt" — and when they complain that an agent ignores instructions, over- or under-triggers a skill/tool, hallucinates, produces the wrong format, or gives poor output quality traceable to its instructions.
+description: Creates and optimizes prompts at both layers — system (system prompts, agent instructions, SKILL.md skills, CLAUDE.md/AGENTS.md, subagent briefs, tool descriptions) and user (task prompts, user turns, requests to coding agents like Claude Code) — from a bare task description or by rewriting, debugging, or porting existing ones, per official guidance for Anthropic Claude, OpenAI GPT, Google Gemini, and open-weight models (Llama, Mistral, Qwen, DeepSeek, gpt-oss, Gemma, Kimi, GLM, Grok), fetching current vendor docs for uncovered models or domains. Use whenever the user asks to create, improve, or debug a prompt, system prompt, persona, skill, or tool description, asks "how should I ask Claude to…" or what belongs in the system prompt vs the user turn, describes what an agent should do ("build me an agent that…") without saying "prompt", or complains that an agent ignores instructions, over- or under-triggers a skill/tool, hallucinates, or gives the wrong format or poor output traceable to its instructions.
 ---
 
 # Prompt Engineer
@@ -19,7 +19,7 @@ One skill, two jobs: **create** a prompt from a task description, or **optimize*
 
 Before touching any text, determine:
 
-- **Artifact type** — system prompt / agent instructions, a Skill (SKILL.md), CLAUDE.md / AGENTS.md, a tool description, a subagent brief, or a one-off task prompt. Each has a different reference file below.
+- **Artifact type and layer** — system prompt / agent instructions, a Skill (SKILL.md), CLAUDE.md / AGENTS.md, a tool description, a subagent brief (all **system layer**: operator-owned, stable, loaded every turn), or a user-turn prompt — a one-off request, the per-call user message of an API prompt, a message to a coding agent (**user layer**: one request and its data). Each has a reference file below. Check the layer before the wording: a rule repeated in every user turn is a system-layer line, and a one-off need written into the system prompt taxes every turn — many "it ignores my instructions" complaints are placement problems ([references/prompt-layers.md](references/prompt-layers.md) §2).
 - **Target model and provider** — techniques differ materially by provider (delimiter style, instruction placement, sampling defaults, reasoning control) and by whether the model is a reasoning model. Identify the exact model family; if unstated, ask — or when you can't, assume a current Claude model and say so.
 - **Observed failure modes** (optimize) — ask or infer what actually goes wrong: ignores instructions, wrong format, hallucinates, over-triggers, too verbose, stops early. Optimization without a target failure is guessing.
 - **Success criteria + 1–2 example inputs with ideal outputs** (create) — Anthropic's stated prerequisite for prompt engineering is a success definition and a way to test it. The intake questions live in [references/prompt-generation.md](references/prompt-generation.md) §1. When you can't ask (non-interactive run), state your assumptions explicitly in the deliverable.
@@ -29,7 +29,7 @@ Before touching any text, determine:
 
 Read [references/research.md](references/research.md) and run it when ANY of these holds:
 
-- The target model family is **missing** from the provider table below, or **newer** than the content snapshot date in research.md §1 — provider guidance rots fastest around sampling defaults and deprecated params.
+- The target model family is **missing** from the provider table below, or **newer** than the bundled references' content snapshot date, **2026-11-06** — provider guidance rots fastest around sampling defaults and deprecated params.
 - The prompt must embed **domain constants** (API schemas, product rules, regulatory text, rubrics) that neither the user nor the codebase supplied — never invent constants from memory; a confidently wrong constant is worse than a gap.
 - The artifact is high-stakes and **exemplars** would help (Anthropic's published production system prompts, existing skills in this repo).
 
@@ -42,6 +42,7 @@ Otherwise skip — research answers specific questions; it is not a ritual. Cite
 | New prompt from a bare task description | [references/prompt-generation.md](references/prompt-generation.md), then ALSO the row below matching the artifact being created |
 | System prompt, agent persona, CLAUDE.md/AGENTS.md, subagent brief, multi-agent orchestration | [references/system-prompts.md](references/system-prompts.md) |
 | Skill (SKILL.md + resources), skill description/triggering | [references/skills-authoring.md](references/skills-authoring.md) |
+| User-turn / task prompt, a request to a coding agent, "how should I ask for…", or deciding what goes in the system prompt vs the user turn | [references/prompt-layers.md](references/prompt-layers.md) |
 | Any prompt text: task prompts, formatting, examples, structure, tool descriptions | [references/prompting-techniques.md](references/prompting-techniques.md) |
 
 Then read the provider file for the target model (always, when the provider is known):
@@ -53,7 +54,7 @@ Then read the provider file for the target model (always, when the provider is k
 | Google Gemini | [references/provider-gemini.md](references/provider-gemini.md) |
 | Llama, Muse, Mistral, Qwen, DeepSeek, gpt-oss, Gemma, Kimi, GLM, MiniMax, Grok, other open-weight | [references/provider-open-models.md](references/provider-open-models.md) |
 
-Most optimize jobs need `prompting-techniques.md` + one artifact reference + one provider reference; the create path adds `prompt-generation.md` on top (four files). Read whole reference files, not the first 100 lines.
+Most optimize jobs need `prompting-techniques.md` + one artifact reference + one provider reference; the create path adds `prompt-generation.md` on top (four files). A user-turn job is `prompting-techniques.md` + `prompt-layers.md` + the provider file. One request can yield artifacts at both layers (a message to send now plus a line for CLAUDE.md or the system prompt) — read the row for each. Read whole reference files, not the first 100 lines.
 
 ### 4A. Create path
 
@@ -67,9 +68,9 @@ Follow [references/prompt-generation.md](references/prompt-generation.md): intak
 - **Rewrite** — right idea, wrong shape (vague, negative, aggressive caps, wrong altitude, missing the why).
 - **Add** — a genuine gap tied to an observed/likely failure mode. Add instructions only for failures, not for completeness.
 - **Restructure** — ordering and sectioning (long data on top, instructions at the end, clearly delimited sections).
-- **Move** — settings written as prose that belong in the request (sampling, reasoning effort, output schema): set them as API parameters per the provider file, or drop them where the model ignores or rejects them.
+- **Move** — text in the wrong place. Settings written as prose (sampling, reasoning effort, output schema) become API parameters per the provider file, or are dropped where the model ignores or rejects them. Instructions in the wrong layer change layer: a standing rule repeated per turn moves up into the system prompt, CLAUDE.md, project instructions, or a skill; a one-request need in the system prompt moves down into the turn that needs it (prompt-layers.md §5).
 
-**Then rewrite.** Apply the core principles below plus the reference specifics. Preserve the author's intent and domain rules exactly — you are changing the *engineering* of the prompt, not its *policy*. If a domain rule looks wrong, flag it in the change log instead of silently changing it.
+**Then rewrite.** Apply the core principles below plus the reference specifics. Preserve the author's intent and domain rules exactly — you are changing the *engineering* of the prompt, not its *policy*. If a domain rule looks wrong, flag it in the change log instead of silently changing it. Flag too when the reported behavior contradicts the provider file (a "dead" feature that apparently still works usually means a gateway or a model fallback sits in between).
 
 ### 5. Verify and deliver
 
@@ -79,7 +80,7 @@ Run a three-pass check on the result:
 2. **Compression** — for each line ask "would removing this cause a mistake on a strong model?" If no, cut it.
 3. **Literal reading** — golden rule: would a competent colleague with minimal context know exactly what to do? A line that could be misread will be.
 
-Deliver: (a) the full prompt, (b) the change log grouped by Cut / Rewrite / Add / Restructure (for the create path: a short design-decision log — architecture chosen and why, what was deliberately left out), (c) 2–3 concrete test inputs — for new prompts, the intake examples are the first tests.
+Deliver: (a) the full prompt — when the result spans layers, each piece labeled with where it goes ("send this", "add this to CLAUDE.md"), with API-parameter and integration changes as their own labeled block, (b) the change log grouped by Cut / Rewrite / Add / Restructure / Move, each finding naming its source line and the principle or reference section behind it (for the create path: a short design-decision log — architecture chosen and why, what was deliberately left out, and the placement reasoning whenever more than one layer is involved), plus the assumptions made when you could not ask, (c) 2–3 concrete test inputs — for new prompts, the intake examples are the first tests.
 
 ## Core principles (apply always)
 
@@ -87,12 +88,13 @@ Deliver: (a) the full prompt, (b) the change log grouped by Cut / Rewrite / Add 
 2. **Right altitude.** Between brittle hardcoded if-else logic and vague platitudes sits the sweet spot: strong heuristics the model can generalize from. "If X, do Y" trigger–response pairs beat general dispositions; concrete beats abstract; but heuristics beat exhaustive case enumeration.
 3. **Explain the why.** Models generalize from motivation. "Never use ellipses because the output is read by a text-to-speech engine" outperforms "NEVER use ellipses" — and covers cases you didn't enumerate.
 4. **Positive over negative.** Say what to do, not what to avoid: "Respond in flowing prose paragraphs" beats "Do not use markdown."
-5. **Calm over caps.** On modern instruction-following models, "Use this tool when…" works; "CRITICAL: You MUST…" causes overtriggering (documented for Claude 4+; Gemini 3 similarly over-analyzes persuasive language). Reserve emphasis (IMPORTANT) for the one or two rules that truly are critical. Frequent ALL-CAPS/MUST is a yellow flag that the why is missing.
+5. **Calm over caps.** On modern instruction-following models a plainly worded "Use this tool when…" is followed; "CRITICAL: You MUST…" causes overtriggering, and stacked emphasis mostly makes the model over-apply the rule (documented for Claude 4+; Gemini 3 similarly over-analyzes persuasive language). Frequent ALL-CAPS/MUST is a yellow flag that the why is missing — and a line you keep adding emphasis to belongs in a hook or validator, not in any prompt layer.
 6. **Be explicit about desired behavior.** Newer models do exactly what's asked, no more: "suggest changes" gets suggestions, not edits. Ask explicitly for above-and-beyond behavior when wanted ("Go beyond the basics; include as many relevant features as possible").
 7. **Structure with tags/headers.** Separate instructions, context, data, and examples into clearly named sections, consistently — the delimiter style (XML vs Markdown) and instruction placement follow the target provider's file. Long documents (20k+ tokens) go at the top; the query at the end.
 8. **Few, canonical examples.** 3–5 diverse, realistic examples wrapped in `<example>` tags beat a laundry list of edge cases. Examples teach patterns, including reasoning style.
 9. **Give the model a check it can run.** For agentic prompts: a verification step, success criteria, or self-check ("Before finishing, verify your answer against …") — and require evidence, not claims.
 10. **Iterate empirically.** The loop is: baseline on real tasks → identify gaps → minimal change → re-run → refine from observed behavior, not assumptions. Never declare a prompt "optimized" or "done" without at least proposing how to test it.
+11. **Each instruction in the layer that matches its lifetime.** Stable role, rules, tool guidance, and default format in the system layer (operator-owned, wins conflicts, cached); the task, its data, and per-request format in the user turn. The second time the same line is typed into a user turn, move it up; a system line needed only sometimes moves down into a skill or the turn.
 
 ## Scope notes
 

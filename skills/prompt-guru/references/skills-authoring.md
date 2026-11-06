@@ -15,7 +15,7 @@ Distilled from platform.claude.com/docs Agent Skills best practices, the Agent S
 ## 1. How triggering works
 
 - Only the skill's **name + description** are preloaded; Claude chooses among potentially 100+ skills on the description alone. The body loads only after triggering. Therefore: triggering problems are *description* problems; behavior problems are *body* problems. Diagnose which one you have before editing.
-- The listing is truncated: Claude Code cuts `description` + `when_to_use` at 1,536 characters, and when the listing outgrows its budget (1% of the context window) it drops descriptions starting with the least-used skills. Put the trigger first, so whatever survives still triggers.
+- The listing is truncated: Claude Code cuts `description` + `when_to_use` at 1,536 characters (configurable via `skillListingMaxDescChars`), and when the listing outgrows its budget (1% of the model's context window; raisable via `skillListingBudgetFraction`, estimated by `/doctor`) it drops descriptions starting with the least-used skills. Put the trigger first, so whatever survives still triggers.
 - Claude tends to **under-trigger**: it consults skills only for tasks it can't trivially handle itself. Descriptions should be a little pushy — enumerate the concrete user phrasings and situations that should trigger, including indirect ones ("even if they don't explicitly say 'dashboard'").
 
 ## 2. Naming and description
@@ -26,13 +26,13 @@ Distilled from platform.claude.com/docs Agent Skills best practices, the Agent S
   - Bad: "Helps with documents."
 - ALL when-to-use information lives in the description, none in the body — the body is invisible until after the trigger decision.
 - Cover near-miss phrasings and the competing-skill boundary ("use X-skill for spreadsheets; this skill for PDFs only").
-- Portability: outside Claude Code (claude.ai uploads, the Skills API, `package_skill.py`) only the spec's frontmatter fields are allowed — `name`, `description`, `license`, `compatibility` (≤500 chars), `metadata`, `allowed-tools`. Any other key (e.g. Claude Code's `when_to_use`) fails packaging or upload with a hard error.
+- Portability: outside Claude Code (claude.ai uploads, the Skills API, `package_skill.py`) only the spec's frontmatter fields are allowed — `name`, `description`, `license`, `compatibility` (≤500 chars), `metadata`, `allowed-tools`. Any other key (e.g. Claude Code's `when_to_use`) fails packaging or upload with a hard error — `claude plugin validate` (v2.1.233+) checks the frontmatter before you ship.
 
 ## 3. Progressive disclosure and file layout
 
 Three levels: (1) name+description — always in context (~100 tokens); (2) SKILL.md body — loaded on trigger, keep **<500 lines** (spec: under ~5k tokens); (3) references/scripts/assets — loaded or executed on demand, zero cost until used.
 
-After compaction, Claude Code keeps only the start of each invoked skill (first ~5k tokens per skill, 25k combined, oldest dropped first) — put the rules that must survive near the top of SKILL.md.
+After compaction, Claude Code re-attaches only the start of each invoked skill's most recent invocation (first 5,000 tokens per skill, 25,000 combined, filled from the most recently invoked so the oldest drop first) — put the rules that must survive near the top of SKILL.md.
 
 - Split by domain with descriptive filenames (`references/aws.md`, `references/gcp.md`) so only relevant material loads. Split out mutually-exclusive or rarely-used content first.
 - Keep reference links **one level deep** from SKILL.md — nested chains cause partial reads (`head -100`) and missed content. Tell the reader explicitly when to read each file.

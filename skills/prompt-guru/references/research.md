@@ -10,11 +10,11 @@ When the bundled references can't answer, fetch official sources — don't pad t
 
 ## 1. When to research — and when not
 
-Content snapshot date of the bundled references: **2026-10-11** (this line is the runtime copy; MAINTENANCE.md mirrors it for maintainers — update both together).
+The bundled references' content snapshot date lives in SKILL.md step 2 (so the gate can be checked without opening this file); MAINTENANCE.md §1 mirrors it for maintainers — update both together.
 
 Research when ANY of these holds:
 
-- **Provider gap or staleness** — the target model family is missing from the `provider-*.md` files, or newer than the snapshot date above. Fetch that vendor's official prompting guide, prioritizing its migration / what's-new page.
+- **Provider gap or staleness** — the target model family is missing from the `provider-*.md` files, or newer than the snapshot date in SKILL.md step 2. Fetch that vendor's official prompting guide, prioritizing its migration / what's-new page.
 - **Domain constants needed** — the prompt must embed facts the user or codebase didn't supply: API schemas, product rules, regulatory text, scoring rubrics. Get them from the authoritative source or ask the user; a gap flagged honestly beats an invented constant.
 - **Exemplars for high-stakes artifacts** — Anthropic publishes its production system prompts (release notes below); this repo's own skills are exemplars for SKILL.md work. Reading one strong exemplar beats reasoning from principles alone.
 
@@ -26,8 +26,9 @@ Official vendor documentation only. Blogs, Reddit, and social posts are fine as 
 
 | Provider / topic | Official sources |
 |---|---|
-| Anthropic Claude | platform.claude.com/docs — "Prompting best practices" hub + per-model prompting pages, effort, thinking, model-deprecations, migration guide, "Define success criteria" (test-and-evaluate/develop-tests); anthropic.com/engineering blog; published system prompts: platform.claude.com/docs/en/release-notes/system-prompts |
-| Claude Code (CLAUDE.md, skills, subagents) | code.claude.com/docs/en/ — memory, skills, sub-agents, env-vars |
+| Anthropic Claude | platform.claude.com/docs — "Prompting best practices" (one page: per-model guidance, techniques for all models, migration; the old per-technique URLs return it) + per-model prompting pages; build-with-claude: effort, thinking, mid-conversation-system-messages, prompt-caching, preserved-thinking; tool-use/define-tools; about-claude/model-deprecations; test-and-evaluate: define-success (develop-tests merged into it), strengthen-guardrails (reduce-hallucinations, increase-consistency); release-notes/api; anthropic.com/engineering and claude.com/resources/articles (agent-building posts); published system prompts: platform.claude.com/docs/en/release-notes/system-prompts |
+| Claude Code (user prompts, CLAUDE.md, skills, subagents) | code.claude.com/docs/en/ — best-practices (the engineering post "Claude Code: Best practices for agentic coding" redirects here), memory, skills, sub-agents, settings, env-vars |
+| End-user prompting layers (claude.ai preferences, Projects, Skills, CLAUDE.md) | support.claude.com Help Center — "Give Claude context: CLAUDE.md and better prompts", "How can I create and manage Projects", "Understanding Claude's personalization features", "My prompt isn't giving me a helpful answer"; claude.com/blog "Best practices for prompt engineering" |
 | Agent Skills | agentskills.io/specification; platform.claude.com/docs Agent Skills best-practices; anthropic.com/engineering "Equipping agents for the real world with Agent Skills" |
 | OpenAI | developers.openai.com/api/docs/guides — latest-model pages (GPT-6 Astra, GPT-5.6), prompt guidance, upgrade guides, reasoning, function-calling, prompt-engineering; /api/docs/deprecations + /changelog; OpenAI Model Spec (github.com/openai/model_spec) |
 | Google Gemini | ai.google.dev/gemini-api/docs: latest-model, what's-new pages, prompting-strategies, thinking, caching, media-resolution, long-context; docs.cloud.google.com Vertex AI prompt-design-strategies |
