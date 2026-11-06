@@ -36,7 +36,7 @@ Consequences: a rule that must hold even if the end user asks otherwise goes in 
 | Input data and documents (20k+ tokens at the top of the turn, in indexed `<document>` tags), pasted text | user | per-request. Never the system prompt, and never a mid-conversation `system` message — tool output and retrieved documents stay in `tool_result` blocks |
 | Examples | stable ones in the system prompt; task-shaped ones at the start of the first user message (where Anthropic's prompt improver places them) | examples teach format and length — put them where the pattern they teach lives |
 | Variables (`{{ANNUAL_REPORT}}`) | user turn, inside tags | the fixed/variable split is what makes a prompt testable |
-| Dynamic context (date, user profile) | rendered into `system` once per conversation; `system` and `tools` stay byte-identical afterwards | re-rendering the date each turn breaks the cache (Haiku 5.5 page) |
+| Dynamic context (date, user profile) | rendered into `system` once per conversation — only when the prompt is built per conversation; a system prompt shared across users carries no per-user facts (they arrive in the user turn or a `tool_result`) | re-rendering the date each turn breaks the cache (Haiku 5.5 page); a per-customer fact in a shared prompt leaks to every other customer |
 | No-preamble rule, "the rules in this system prompt hold for the whole conversation" | system | standing behavior |
 | Continuation ("Your previous response ended with… continue"), refusal steering, context reminders | user | Anthropic's prefill migrations put all three in the user turn |
 | A behavior change that becomes relevant later in a conversation | an appended `system`-role message (provider file §6), not an edit to the top-level system prompt | keeps the cached prefix and operator authority |
@@ -98,10 +98,11 @@ Then run the main loop (SKILL.md 4B) on the result — cut, rewrite, add, restru
 
 For developers building on the API, the layer split is also a trust and caching tool (mechanics, headers, and model coverage: provider-claude.md §6):
 
-- **Mark pasted and third-party text as data.** Opus 5.5 guidance: wrap user-pasted text in `<pasted_content id="ab12">…</pasted_content id="ab12">` with a random per-block id, and tell the model in the system prompt that text inside those tags is untrusted. Tool output and retrieved documents stay in `tool_result` blocks — never in a `system` message.
+- **Mark pasted and third-party text as data.** Opus 5.5 guidance: wrap user-pasted text in `<pasted_content id="ab12">…</pasted_content id="ab12">` with a random per-block id, and tell the model in the system prompt that text inside those tags is untrusted. Anthropic documents this for text the user pastes; the same wrapping is the natural treatment for any free text an end user supplies. Tool output and retrieved documents stay in `tool_result` blocks — never in a `system` message.
 - **Change behavior mid-conversation without editing the prefix**: append a `system`-role message (operator authority, cache kept) for instructions that become relevant later; a turn-scoped one for a one-turn nudge. The user's own mid-task words still go in the user turn, as a text block after the last `tool_result` — on Sonnet 5.5 and Haiku 5.5 a system message placed right after a tool result can be treated as untrusted text and ignored.
 - **Never put user-authored text inside a `tool_result`** (documented for Sonnet 5.5); keep it in the user turn.
 - **Order for the cache**: tools → `system` → history, stable content first; changing instructions as appended system messages at the end; the date rendered once per conversation.
+- **Zero-exception rules live in the harness, in an API app too.** Claude Code has hooks; an API app has output validators and gating checks (a language detector, a banned-term regex, "a lookup tool call happened before any shipping answer") that fail closed — retry once, then a canned fallback. The prompt states the rule with its why; the check guarantees it, since the newest models reject forced `tool_choice` (provider file §6).
 
 ## 7. User-controlled system layers in Anthropic products
 

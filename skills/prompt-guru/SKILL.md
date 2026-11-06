@@ -70,7 +70,7 @@ Follow [references/prompt-generation.md](references/prompt-generation.md): intak
 - **Restructure** — ordering and sectioning (long data on top, instructions at the end, clearly delimited sections).
 - **Move** — text in the wrong place. Settings written as prose (sampling, reasoning effort, output schema) become API parameters per the provider file, or are dropped where the model ignores or rejects them. Instructions in the wrong layer change layer: a standing rule repeated per turn moves up into the system prompt, CLAUDE.md, project instructions, or a skill; a one-request need in the system prompt moves down into the turn that needs it (prompt-layers.md §5).
 
-**Then rewrite.** Apply the core principles below plus the reference specifics. Preserve the author's intent and domain rules exactly — you are changing the *engineering* of the prompt, not its *policy*. If a domain rule looks wrong, flag it in the change log instead of silently changing it.
+**Then rewrite.** Apply the core principles below plus the reference specifics. Preserve the author's intent and domain rules exactly — you are changing the *engineering* of the prompt, not its *policy*. If a domain rule looks wrong, flag it in the change log instead of silently changing it. Flag too when the reported behavior contradicts the provider file (a "dead" feature that apparently still works usually means a gateway or a model fallback sits in between).
 
 ### 5. Verify and deliver
 
@@ -80,7 +80,7 @@ Run a three-pass check on the result:
 2. **Compression** — for each line ask "would removing this cause a mistake on a strong model?" If no, cut it.
 3. **Literal reading** — golden rule: would a competent colleague with minimal context know exactly what to do? A line that could be misread will be.
 
-Deliver: (a) the full prompt — when the result spans layers, each piece labeled with where it goes ("send this", "add this to CLAUDE.md"), (b) the change log grouped by Cut / Rewrite / Add / Restructure / Move (for the create path: a short design-decision log — architecture chosen and why, what was deliberately left out, and the placement reasoning whenever more than one layer is involved), (c) 2–3 concrete test inputs — for new prompts, the intake examples are the first tests.
+Deliver: (a) the full prompt — when the result spans layers, each piece labeled with where it goes ("send this", "add this to CLAUDE.md"), with API-parameter and integration changes as their own labeled block, (b) the change log grouped by Cut / Rewrite / Add / Restructure / Move, each finding naming its source line and the principle or reference section behind it (for the create path: a short design-decision log — architecture chosen and why, what was deliberately left out, and the placement reasoning whenever more than one layer is involved), plus the assumptions made when you could not ask, (c) 2–3 concrete test inputs — for new prompts, the intake examples are the first tests.
 
 ## Core principles (apply always)
 

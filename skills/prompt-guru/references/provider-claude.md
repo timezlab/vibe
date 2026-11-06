@@ -45,7 +45,7 @@ Anthropic's own sample prompts wrap behavioral policies in named XML blocks — 
 - Irreversible actions: instruct confirmation before force-push, `rm -rf`, posting externally; "do not use destructive actions as a shortcut."
 - Guide post-tool reflection: "After receiving tool results, carefully reflect on their quality and determine optimal next steps before proceeding."
 - Unattended runs: the Opus 5.5 page's unattended-agent paragraph goes at the end of the system prompt from the first request, not mid-conversation. Sonnet 5.5 at `low` effort may skip verification and Haiku 5.5 stops early at `low` — add the pages' verification paragraph plus "Keep working until everything the user asked for is done…" when running them there.
-- The dose of "verify your work" lines is model-dependent: Opus 5 over-verifies (delete them), while Sonnet 5.5 and Haiku 5.5 at low/medium effort need a real check demanded — "run the tests", not "review your answer". See §7.
+- The dose of "verify your work" lines is model-dependent: Opus 5 over-verifies (delete them), while Sonnet 5.5 and Haiku 5.5 at low/medium effort need a real check demanded — "run the tests", not "review your answer". The Opus 5.5 and Fable 5.1 pages document no verification quirk — default to a runnable check with no self-review line, and add one only after an observed miss. See §7.
 
 ## 5. Thinking and effort
 
